@@ -21,4 +21,21 @@ fn main() {
             }
         }
     }
+
+    'out2: for i in 0..expenses.len() {
+        for j in 0..expenses.len() {
+            if i == j {
+                continue;
+            }
+            for k in 0..expenses.len() {
+                if j == k || i == k {
+                    continue;
+                }
+                if expenses[i] + expenses[j] + expenses[k] == 2020 {
+                    println!("Answer is {}", expenses[i] * expenses[j] * expenses[k]);
+                    break 'out2;
+                }
+            }
+        }
+    }
 }
