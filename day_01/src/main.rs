@@ -1,5 +1,7 @@
 use std::io::BufRead;
 
+use itertools::Itertools;
+
 fn main() {
     do_main("inputs/day_01.txt");
 }
@@ -15,39 +17,26 @@ fn do_main(filename: &str) {
         }
     }
 
-    let mut part1 = None;
-    let mut part2 = None;
+    let part1 = expenses
+        .iter()
+        .tuple_combinations()
+        .filter(|&(x, y)| x + y == 2020)
+        .map(|(x, y)| x * y)
+        .next()
+        .expect("there should have been a pair that added to 2020");
+    println!("part 1: {}", part1);
 
-    'out: for i in 0..expenses.len() {
-        for j in 0..expenses.len() {
-            if i != j && expenses[i] + expenses[j] == 2020 {
-                println!("Answer is {}", expenses[i] * expenses[j]);
-                part1 = Some(expenses[i] * expenses[j]);
-                break 'out;
-            }
-        }
-    }
+    let part2 = expenses
+        .iter()
+        .tuple_combinations()
+        .filter(|&(x, y, z)| x + y + z == 2020)
+        .map(|(x, y, z)| x * y * z)
+        .next()
+        .expect("there should have been a triple that added to 2020");
+    println!("part 2: {}", part2);
 
-    'out2: for i in 0..expenses.len() {
-        for j in 0..expenses.len() {
-            if i == j {
-                continue;
-            }
-            for k in 0..expenses.len() {
-                if j == k || i == k {
-                    continue;
-                }
-                if expenses[i] + expenses[j] + expenses[k] == 2020 {
-                    println!("Answer is {}", expenses[i] * expenses[j] * expenses[k]);
-                    part2 = Some(expenses[i] * expenses[j] * expenses[k]);
-                    break 'out2;
-                }
-            }
-        }
-    }
-
-    assert_eq!(part1, Some(1019904));
-    assert_eq!(part2, Some(176647680));
+    assert_eq!(part1, 1019904);
+    assert_eq!(part2, 176647680);
 }
 
 #[cfg(test)]
