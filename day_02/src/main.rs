@@ -1,7 +1,5 @@
 use std::io::BufRead;
 
-use itertools::Itertools;
-
 fn main() {
     do_main("inputs/day_02.txt");
 }
