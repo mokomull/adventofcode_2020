@@ -54,7 +54,7 @@ fn part2_check(password: &Password) -> bool {
         .password
         .chars()
         .enumerate()
-        .filter(|&(i, c)| c == password.c && (i >= password.low - 1 && i <= password.high - 1))
+        .filter(|&(i, c)| c == password.c && (i == password.low - 1 || i == password.high - 1))
         .count()
         == 1
 }
