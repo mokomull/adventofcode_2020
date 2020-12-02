@@ -41,12 +41,14 @@ fn do_main(filename: &str) {
         })
         .count();
     println!("part 1: {}", part1);
+    assert_eq!(part1, 524);
 
     let part2 = passwords
         .iter()
         .filter(|&password| part2_check(password))
         .count();
     println!("part 2: {}", part2);
+    assert_eq!(part2, 485);
 }
 
 fn part2_check(password: &Password) -> bool {
@@ -81,5 +83,10 @@ mod test {
             c: 'c',
             password: "ccccccccc".into(),
         }));
+    }
+
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_02.txt");
     }
 }
