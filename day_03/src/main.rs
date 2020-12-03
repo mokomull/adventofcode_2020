@@ -36,6 +36,7 @@ fn do_main(filename: &str) {
         .map(|&(right, down)| count_hits(&map, right, down))
         .product();
     dbg!(part2);
+    assert_eq!(part2, 3952146825);
 }
 
 fn count_hits(map: &Vec<Vec<Cell>>, right: usize, down: usize) -> usize {
@@ -50,4 +51,12 @@ fn count_hits(map: &Vec<Vec<Cell>>, right: usize, down: usize) -> usize {
         col += right;
     }
     res
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_03.txt");
+    }
 }
