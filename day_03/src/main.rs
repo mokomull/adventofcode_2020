@@ -30,6 +30,12 @@ fn do_main(filename: &str) {
     let part1 = count_hits(&map, 3, 1);
     dbg!(part1);
     assert_eq!(part1, 205);
+
+    let part2: usize = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]
+        .iter()
+        .map(|&(right, down)| count_hits(&map, right, down))
+        .product();
+    dbg!(part2);
 }
 
 fn count_hits(map: &Vec<Vec<Cell>>, right: usize, down: usize) -> usize {
