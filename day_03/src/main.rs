@@ -27,14 +27,21 @@ fn do_main(filename: &str) {
         map.push(row);
     }
 
-    let (mut row, mut col) = (0, 0);
-    let mut part1 = 0;
-    while row < map.len() {
-        if let Tree = map[row][col % map[0].len()] {
-            part1 += 1;
-        }
-        row += 1;
-        col += 3;
-    }
+    let part1 = count_hits(&map, 3, 1);
     dbg!(part1);
+    assert_eq!(part1, 205);
+}
+
+fn count_hits(map: &Vec<Vec<Cell>>, right: usize, down: usize) -> usize {
+    assert!(down > 0);
+    let (mut row, mut col) = (0, 0);
+    let mut res = 0;
+    while row < map.len() {
+        if let Cell::Tree = map[row][col % map[0].len()] {
+            res += 1;
+        }
+        row += down;
+        col += right;
+    }
+    res
 }
