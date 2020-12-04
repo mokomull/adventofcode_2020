@@ -1,7 +1,5 @@
-use maplit::{convert_args, hashmap};
-
+use std::collections::HashMap;
 use std::io::BufRead;
-use std::{collections::HashMap, unimplemented};
 
 fn main() {
     do_main("inputs/day_04.txt");
@@ -106,6 +104,7 @@ fn matches_regex(passport: &HashMap<String, String>, key: &str, regex: &str) -> 
 #[cfg(test)]
 mod test {
     use super::*;
+    use maplit::{convert_args, hashmap};
 
     #[test]
     fn valid_passports() {
