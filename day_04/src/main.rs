@@ -35,12 +35,14 @@ fn do_main(filename: &str) {
         .filter(|&passport| is_valid_passport(passport))
         .count();
     dbg!(part1);
+    assert_eq!(part1, 228);
 
     let part2 = passports
         .iter()
         .filter(|&passport| is_valid_passport_part2(passport))
         .count();
     dbg!(part2);
+    assert_eq!(part2, 175);
 }
 
 fn is_valid_passport(passport: &HashMap<String, String>) -> bool {
@@ -146,5 +148,10 @@ mod test {
             "ecl" =>"brn",
             "hgt" =>"59in",
         ))));
+    }
+
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_04.txt");
     }
 }
