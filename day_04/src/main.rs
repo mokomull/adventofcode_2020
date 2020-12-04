@@ -1,7 +1,7 @@
 use maplit::{convert_args, hashmap};
 
-use std::collections::HashMap;
 use std::io::BufRead;
+use std::{collections::HashMap, unimplemented};
 
 fn main() {
     do_main("inputs/day_04.txt");
@@ -35,12 +35,70 @@ fn do_main(filename: &str) {
         .filter(|&passport| is_valid_passport(passport))
         .count();
     dbg!(part1);
+
+    let part2 = passports
+        .iter()
+        .filter(|&passport| is_valid_passport_part2(passport))
+        .count();
+    dbg!(part2);
 }
 
 fn is_valid_passport(passport: &HashMap<String, String>) -> bool {
     ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
         .iter()
         .all(|&k| passport.contains_key(k))
+}
+
+fn is_valid_passport_part2(passport: &HashMap<String, String>) -> bool {
+    let byr_ok = integer_exists_between(&passport, "byr", 1920, 2002);
+    let iyr_ok = integer_exists_between(&passport, "iyr", 2010, 2020);
+    let eyr_ok = integer_exists_between(&passport, "eyr", 2020, 2030);
+    let hgt_ok = passport
+        .get("hgt")
+        .and_then(|hgt| {
+            if hgt.ends_with("cm") {
+                hgt[..hgt.len() - 2]
+                    .parse::<u32>()
+                    .ok()
+                    .map(|i| i >= 150 && i <= 193)
+            } else if hgt.ends_with("in") {
+                hgt[..hgt.len() - 2]
+                    .parse::<u32>()
+                    .ok()
+                    .map(|i| i >= 59 && i <= 76)
+            } else {
+                return None;
+            }
+        })
+        .unwrap_or(false);
+    let hcl_ok = matches_regex(passport, "hcl", "^#[0-9a-f]{6}$");
+    let ecl_ok = matches_regex(passport, "ecl", "^(amb|blu|brn|gry|grn|hzl|oth)$");
+    let pid_ok = matches_regex(passport, "pid", "^[0-9]{9}$");
+
+    byr_ok && iyr_ok && eyr_ok && hgt_ok && hcl_ok && ecl_ok && pid_ok
+}
+
+fn integer_exists_between(
+    passport: &HashMap<String, String>,
+    key: &str,
+    lower: u32,
+    upper: u32,
+) -> bool {
+    passport
+        .get(key)
+        .and_then(|i| i.parse::<u32>().ok())
+        .map(|i| i >= lower && i <= upper)
+        .unwrap_or(false)
+}
+
+fn matches_regex(passport: &HashMap<String, String>, key: &str, regex: &str) -> bool {
+    passport
+        .get(key)
+        .map(|s| {
+            let re = regex::Regex::new(regex).unwrap();
+            re.is_match(s)
+        })
+        .unwrap_or(false)
 }
 
 #[cfg(test)]
