@@ -26,6 +26,10 @@ fn do_main(filename: &str) {
         }
     }
 
+    if !this.is_empty() {
+        passports.push(this);
+    }
+
     let part1 = passports
         .iter()
         .filter(|&passport| is_valid_passport(passport))
