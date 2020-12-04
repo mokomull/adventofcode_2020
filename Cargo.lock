@@ -28,6 +28,7 @@ version = "0.1.0"
 name = "day_04"
 version = "0.1.0"
 dependencies = [
+ "lazy_static",
  "maplit",
  "regex",
 ]

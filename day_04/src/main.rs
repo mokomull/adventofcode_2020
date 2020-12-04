@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use std::io::BufRead;
 
+use regex::Regex;
+
 fn main() {
     do_main("inputs/day_04.txt");
 }
@@ -71,9 +73,16 @@ fn is_valid_passport_part2(passport: &HashMap<String, String>) -> bool {
             }
         })
         .unwrap_or(false);
-    let hcl_ok = matches_regex(passport, "hcl", "^#[0-9a-f]{6}$");
-    let ecl_ok = matches_regex(passport, "ecl", "^(amb|blu|brn|gry|grn|hzl|oth)$");
-    let pid_ok = matches_regex(passport, "pid", "^[0-9]{9}$");
+
+    lazy_static::lazy_static! {
+        static ref HCL_RE: Regex = Regex::new("^#[0-9a-f]{6}$").unwrap();
+        static ref ECL_RE: Regex = Regex::new("^(amb|blu|brn|gry|grn|hzl|oth)$").unwrap();
+        static ref PID_RE: Regex = Regex::new("^[0-9]{9}$").unwrap();
+    };
+
+    let hcl_ok = matches_regex(passport, "hcl", &HCL_RE);
+    let ecl_ok = matches_regex(passport, "ecl", &ECL_RE);
+    let pid_ok = matches_regex(passport, "pid", &PID_RE);
 
     byr_ok && iyr_ok && eyr_ok && hgt_ok && hcl_ok && ecl_ok && pid_ok
 }
@@ -91,13 +100,10 @@ fn integer_exists_between(
         .unwrap_or(false)
 }
 
-fn matches_regex(passport: &HashMap<String, String>, key: &str, regex: &str) -> bool {
+fn matches_regex(passport: &HashMap<String, String>, key: &str, regex: &Regex) -> bool {
     passport
         .get(key)
-        .map(|s| {
-            let re = regex::Regex::new(regex).unwrap();
-            re.is_match(s)
-        })
+        .map(|s| regex.is_match(s))
         .unwrap_or(false)
 }
 
