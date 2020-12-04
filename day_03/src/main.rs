@@ -39,7 +39,7 @@ fn do_main(filename: &str) {
     assert_eq!(part2, 3952146825);
 }
 
-fn count_hits(map: &Vec<Vec<Cell>>, right: usize, down: usize) -> usize {
+fn count_hits(map: &[Vec<Cell>], right: usize, down: usize) -> usize {
     assert!(down > 0);
     let (mut row, mut col) = (0, 0);
     let mut res = 0;

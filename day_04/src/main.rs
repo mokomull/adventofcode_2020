@@ -69,7 +69,7 @@ fn is_valid_passport_part2(passport: &HashMap<String, String>) -> bool {
                     .ok()
                     .map(|i| i >= 59 && i <= 76)
             } else {
-                return None;
+                None
             }
         })
         .unwrap_or(false);
