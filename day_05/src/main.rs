@@ -16,6 +16,7 @@ fn do_main(filename: &str) {
         .collect::<Vec<_>>();
 
     let part1 = seats.iter().max();
+    assert_eq!(part1, Some(&965));
     dbg!(part1);
 
     let part2 = seats
@@ -25,6 +26,7 @@ fn do_main(filename: &str) {
             !seats.contains(seat) && seats.contains(&(seat - 1)) && seats.contains(&(seat + 1))
         })
         .collect::<Vec<_>>();
+    assert_eq!(part2, vec![524]);
     dbg!(part2);
 }
 
@@ -63,5 +65,10 @@ mod test {
         assert_eq!(seat_from_directions("BFFFBBFRRR"), (70, 7));
         assert_eq!(seat_from_directions("FFFBBBFRRR"), (14, 7));
         assert_eq!(seat_from_directions("BBFFBBFRLL"), (102, 4));
+    }
+
+    #[test]
+    fn main() {
+        do_main("../inputs/day_05.txt");
     }
 }
