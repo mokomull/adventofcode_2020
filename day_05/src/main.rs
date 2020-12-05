@@ -6,15 +6,26 @@ fn main() {
 
 fn do_main(filename: &str) {
     let file = std::fs::File::open(filename).expect("could not open the input");
-    let part1 = std::io::BufReader::new(file)
+    let seats = std::io::BufReader::new(file)
         .lines()
         .map(|line| {
             let line = line.expect("could not read line");
             seat_from_directions(&line)
         })
         .map(|(row, column)| row * 8 + column)
-        .max();
+        .collect::<Vec<_>>();
+
+    let part1 = seats.iter().max();
     dbg!(part1);
+
+    let part2 = seats
+        .iter()
+        .map(|seat| seat + 1)
+        .filter(|seat| {
+            !seats.contains(seat) && seats.contains(&(seat - 1)) && seats.contains(&(seat + 1))
+        })
+        .collect::<Vec<_>>();
+    dbg!(part2);
 }
 
 fn seat_from_directions(directions: &str) -> (u32, u32) {
