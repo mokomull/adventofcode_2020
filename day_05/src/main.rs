@@ -12,7 +12,7 @@ fn do_main(filename: &str) {
             let line = line.expect("could not read line");
             seat_from_directions(&line)
         })
-        .map(|(row, column)| row * column)
+        .map(|(row, column)| row * 8 + column)
         .max();
     dbg!(part1);
 }
