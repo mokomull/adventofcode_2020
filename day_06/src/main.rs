@@ -60,4 +60,13 @@ fn do_main(filename: &str) {
         })
         .sum();
     dbg!(sum_of_intersections);
+    assert_eq!(sum_of_intersections, 3052);
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_06.txt");
+    }
 }
