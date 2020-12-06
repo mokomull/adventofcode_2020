@@ -7,8 +7,8 @@ fn main() {
 
 fn do_main(filename: &str) {
     let file = std::fs::File::open(filename).expect("could not open the input");
-    let mut seen = HashSet::new();
-    let mut sum_of_counts = 0;
+    let mut groups = Vec::new();
+    let mut this = Vec::new();
 
     for line in std::io::BufReader::new(file)
         .lines()
@@ -17,14 +17,24 @@ fn do_main(filename: &str) {
         let line = line.expect("could not read line");
 
         if line == "" {
-            sum_of_counts += seen.iter().count();
-            seen = HashSet::new();
+            groups.push(this);
+            this = Vec::new();
         } else {
-            for c in line.chars() {
-                seen.insert(c);
-            }
+            this.push(line.chars().collect::<HashSet<_>>());
         }
     }
+
+    let sum_of_counts: usize = groups
+        .iter()
+        .map(|group| {
+            group
+                .iter()
+                .flatten()
+                .collect::<HashSet<_>>()
+                .iter()
+                .count()
+        })
+        .sum();
 
     dbg!(sum_of_counts);
     assert_eq!(sum_of_counts, 6291);
