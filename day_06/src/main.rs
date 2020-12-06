@@ -38,4 +38,26 @@ fn do_main(filename: &str) {
 
     dbg!(sum_of_counts);
     assert_eq!(sum_of_counts, 6291);
+
+    let sum_of_intersections: usize = groups
+        .iter()
+        .map(|group| {
+            // thanks to
+            // https://www.reddit.com/r/rust/comments/5v35l6/intersection_of_more_than_two_sets/ddz06ho/
+            // for this trick.
+
+            // this clone is "expensive" but we need to initialize the storage from somewhere
+            let first_group = group.iter().next().unwrap().clone();
+            group
+                .iter()
+                .fold(first_group, |prev, this| {
+                    // this clone, on the other hand, is just a clone of chars.  This one is
+                    // "cheap".
+                    prev.intersection(this).cloned().collect()
+                })
+                .iter()
+                .count()
+        })
+        .sum();
+    dbg!(sum_of_intersections);
 }
