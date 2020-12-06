@@ -27,4 +27,5 @@ fn do_main(filename: &str) {
     }
 
     dbg!(sum_of_counts);
+    assert_eq!(sum_of_counts, 6291);
 }
