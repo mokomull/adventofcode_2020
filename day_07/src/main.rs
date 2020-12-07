@@ -35,6 +35,7 @@ fn do_main(filename: &str) {
 
     let part1 = can_contain_gold.len();
     dbg!(part1);
+    assert_eq!(part1, 208);
 
     let mut bags_inside = HashMap::new();
 
@@ -66,6 +67,7 @@ fn do_main(filename: &str) {
 
     let part2 = bags_inside.get(&"shiny gold".to_owned()).unwrap();
     dbg!(part2);
+    assert_eq!(*part2, 1664);
 }
 
 fn parse_line(line: &str) -> (String, Vec<(usize, String)>) {
@@ -88,4 +90,12 @@ fn parse_line(line: &str) -> (String, Vec<(usize, String)>) {
         .collect();
 
     (outer, inner)
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_07.txt");
+    }
 }
