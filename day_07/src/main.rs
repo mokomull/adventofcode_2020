@@ -21,10 +21,12 @@ fn do_main(filename: &str) {
     while !to_search.is_empty() {
         let target = to_search.pop().unwrap();
 
-        for (outer_bag, _) in input
-            .iter()
-            .filter(|&(outer, inners)| inners.iter().find(|&x| x == target).is_some())
-        {
+        for (outer_bag, _) in input.iter().filter(|&(_outer, inners)| {
+            inners
+                .iter()
+                .find(|&(_count, kind)| kind == target)
+                .is_some()
+        }) {
             if can_contain_gold.insert(outer_bag) {
                 to_search.push(outer_bag);
             }
@@ -35,7 +37,7 @@ fn do_main(filename: &str) {
     dbg!(part1);
 }
 
-fn parse_line(line: &str) -> (String, Vec<String>) {
+fn parse_line(line: &str) -> (String, Vec<(usize, String)>) {
     let mut halves = line.split(" bags contain ");
     let outer = halves
         .next()
@@ -46,7 +48,12 @@ fn parse_line(line: &str) -> (String, Vec<String>) {
         .expect("line did not have any inner bags")
         .split_whitespace()
         .tuples()
-        .map(|(number, adjective, color, _noun)| format!("{} {}", adjective, color))
+        .map(|(number, adjective, color, _noun)| {
+            (
+                number.parse().expect("integer was malformed"),
+                format!("{} {}", adjective, color),
+            )
+        })
         .collect();
 
     (outer, inner)
