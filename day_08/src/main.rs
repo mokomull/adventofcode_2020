@@ -23,8 +23,6 @@ fn do_main(filename: &str) {
             break acc;
         }
 
-        ip += 1;
-
         match instructions[ip] {
             Instruction::Acc(offset) => acc += offset,
             Instruction::Nop => {}
@@ -32,6 +30,8 @@ fn do_main(filename: &str) {
                 ip = ip.wrapping_add((offset - 1) as usize);
             }
         }
+
+        ip += 1;
     };
     dbg!(part1);
 }
