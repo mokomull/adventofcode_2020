@@ -18,6 +18,13 @@ fn do_main(filename: &str) {
 
     let part1 = run_until(&instructions, |ip| ips.insert(ip));
     dbg!(part1);
+
+    let mut instructions = instructions;
+    let idx = instructions.len() - 2;
+    instructions[idx - 2] = Instruction::Nop;
+
+    let part2 = run_until(&instructions, |ip| ip < instructions.len());
+    dbg!(part2);
 }
 
 fn run_until<F: FnMut(usize) -> bool>(instructions: &[Instruction], mut visit_ip: F) -> isize {
