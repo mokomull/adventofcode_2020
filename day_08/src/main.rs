@@ -14,26 +14,43 @@ fn do_main(filename: &str) {
         .map(|line| line.expect("could not read a line").into())
         .collect();
 
-    let mut ips = HashSet::new();
-
-    let part1 = run_until(&instructions, |ip| ips.insert(ip));
+    let part1 = run(&instructions);
     dbg!(part1);
 
     let mut instructions = instructions;
     let idx = instructions.len() - 2;
     instructions[idx - 2] = Instruction::Nop;
 
-    let part2 = run_until(&instructions, |ip| ip < instructions.len());
+    let mut part2 = None;
+
+    for i in 0..instructions.len() {
+        let old = std::mem::replace(&mut instructions[i], Instruction::Nop);
+        if let Termination::EndOfProgram(acc) = run(&instructions) {
+            part2 = Some(acc);
+        }
+        instructions[i] = old;
+    }
+
     dbg!(part2);
 }
 
-fn run_until<F: FnMut(usize) -> bool>(instructions: &[Instruction], mut visit_ip: F) -> isize {
+#[derive(Debug)]
+enum Termination {
+    InfiniteLoop(isize),
+    EndOfProgram(isize),
+}
+
+fn run(instructions: &[Instruction]) -> Termination {
     let mut acc = 0;
     let mut ip = 0;
+    let mut ips = HashSet::new();
 
     loop {
-        if !visit_ip(ip) {
-            break acc;
+        if !ips.insert(ip) {
+            return Termination::InfiniteLoop(acc);
+        }
+        if ip >= instructions.len() {
+            return Termination::EndOfProgram(acc);
         }
 
         match instructions[ip] {
