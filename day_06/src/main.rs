@@ -1,7 +1,5 @@
 use prelude::*;
 
-use std::collections::HashSet;
-
 fn main() {
     do_main("inputs/day_06.txt");
 }

@@ -1,5 +1,7 @@
 use std::io::{BufRead, BufReader};
 
+pub use std::collections::{HashMap, HashSet};
+
 pub fn read_lines_from_file<P: AsRef<std::path::Path>>(
     filename: P,
 ) -> impl Iterator<Item = String> {

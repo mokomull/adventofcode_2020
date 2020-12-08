@@ -1,7 +1,5 @@
 use prelude::*;
 
-use std::collections::HashMap;
-
 use regex::Regex;
 
 fn main() {
