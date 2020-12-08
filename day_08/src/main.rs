@@ -14,12 +14,18 @@ fn do_main(filename: &str) {
         .map(|line| line.expect("could not read a line").into())
         .collect();
 
-    let mut acc = 0;
-    let mut ip = 0;
     let mut ips = HashSet::new();
 
-    let part1 = loop {
-        if !ips.insert(ip) {
+    let part1 = run_until(&instructions, |ip| ips.insert(ip));
+    dbg!(part1);
+}
+
+fn run_until<F: FnMut(usize) -> bool>(instructions: &[Instruction], mut visit_ip: F) -> isize {
+    let mut acc = 0;
+    let mut ip = 0;
+
+    loop {
+        if !visit_ip(ip) {
             break acc;
         }
 
@@ -32,8 +38,7 @@ fn do_main(filename: &str) {
         }
 
         ip += 1;
-    };
-    dbg!(part1);
+    }
 }
 
 enum Instruction {
