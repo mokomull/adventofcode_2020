@@ -14,32 +14,68 @@ fn do_main(filename: &str) {
         .map(|line| line.expect("could not read a line").into())
         .collect();
 
+    let part1 = run(&instructions);
+    dbg!(&part1);
+    assert_eq!(part1, Termination::InfiniteLoop(1675));
+
+    let mut instructions = instructions;
+
+    let mut part2 = None;
+
+    for i in 0..instructions.len() {
+        let new = match instructions[i] {
+            Instruction::Nop(offset) => Instruction::Jmp(offset),
+            Instruction::Jmp(offset) => Instruction::Nop(offset),
+            _ => continue,
+        };
+        let old = std::mem::replace(&mut instructions[i], new);
+
+        if let Termination::EndOfProgram(acc) = run(&instructions) {
+            part2 = Some(acc);
+        }
+
+        instructions[i] = old;
+    }
+
+    dbg!(part2);
+    assert_eq!(part2, Some(1532));
+}
+
+#[derive(Debug, PartialEq)]
+enum Termination {
+    InfiniteLoop(isize),
+    EndOfProgram(isize),
+}
+
+fn run(instructions: &[Instruction]) -> Termination {
     let mut acc = 0;
     let mut ip = 0;
     let mut ips = HashSet::new();
 
-    let part1 = loop {
+    loop {
         if !ips.insert(ip) {
-            break acc;
+            return Termination::InfiniteLoop(acc);
+        }
+        if ip >= instructions.len() {
+            return Termination::EndOfProgram(acc);
         }
 
         match instructions[ip] {
             Instruction::Acc(offset) => acc += offset,
-            Instruction::Nop => {}
+            Instruction::Nop(_) => {}
             Instruction::Jmp(offset) => {
                 ip = ip.wrapping_add((offset - 1) as usize);
             }
         }
 
         ip += 1;
-    };
-    dbg!(part1);
+    }
 }
 
 enum Instruction {
     Acc(isize),
     Jmp(isize),
-    Nop,
+    Nop(isize),
 }
 
 impl<T> From<T> for Instruction
@@ -59,8 +95,16 @@ where
         match opcode {
             Some("acc") => Instruction::Acc(argument),
             Some("jmp") => Instruction::Jmp(argument),
-            Some("nop") => Instruction::Nop,
+            Some("nop") => Instruction::Nop(argument),
             _ => panic!("could not parse {}", value),
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_08.txt");
     }
 }
