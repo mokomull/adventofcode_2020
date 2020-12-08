@@ -15,7 +15,8 @@ fn do_main(filename: &str) {
         .collect();
 
     let part1 = run(&instructions);
-    dbg!(part1);
+    dbg!(&part1);
+    assert_eq!(part1, Termination::InfiniteLoop(1675));
 
     let mut instructions = instructions;
 
@@ -37,9 +38,10 @@ fn do_main(filename: &str) {
     }
 
     dbg!(part2);
+    assert_eq!(part2, Some(1532));
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 enum Termination {
     InfiniteLoop(isize),
     EndOfProgram(isize),
@@ -96,5 +98,13 @@ where
             Some("nop") => Instruction::Nop(argument),
             _ => panic!("could not parse {}", value),
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_08.txt");
     }
 }
