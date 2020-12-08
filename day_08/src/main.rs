@@ -18,16 +18,21 @@ fn do_main(filename: &str) {
     dbg!(part1);
 
     let mut instructions = instructions;
-    let idx = instructions.len() - 2;
-    instructions[idx - 2] = Instruction::Nop;
 
     let mut part2 = None;
 
     for i in 0..instructions.len() {
-        let old = std::mem::replace(&mut instructions[i], Instruction::Nop);
+        let new = match instructions[i] {
+            Instruction::Nop(offset) => Instruction::Jmp(offset),
+            Instruction::Jmp(offset) => Instruction::Nop(offset),
+            _ => continue,
+        };
+        let old = std::mem::replace(&mut instructions[i], new);
+
         if let Termination::EndOfProgram(acc) = run(&instructions) {
             part2 = Some(acc);
         }
+
         instructions[i] = old;
     }
 
@@ -55,7 +60,7 @@ fn run(instructions: &[Instruction]) -> Termination {
 
         match instructions[ip] {
             Instruction::Acc(offset) => acc += offset,
-            Instruction::Nop => {}
+            Instruction::Nop(_) => {}
             Instruction::Jmp(offset) => {
                 ip = ip.wrapping_add((offset - 1) as usize);
             }
@@ -68,7 +73,7 @@ fn run(instructions: &[Instruction]) -> Termination {
 enum Instruction {
     Acc(isize),
     Jmp(isize),
-    Nop,
+    Nop(isize),
 }
 
 impl<T> From<T> for Instruction
@@ -88,7 +93,7 @@ where
         match opcode {
             Some("acc") => Instruction::Acc(argument),
             Some("jmp") => Instruction::Jmp(argument),
-            Some("nop") => Instruction::Nop,
+            Some("nop") => Instruction::Nop(argument),
             _ => panic!("could not parse {}", value),
         }
     }
