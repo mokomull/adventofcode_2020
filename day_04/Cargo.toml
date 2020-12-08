@@ -8,5 +8,7 @@ edition = "2018"
 
 [dependencies]
 lazy_static = "1.4"
-maplit = "1.0"
 prelude = { path = "../prelude" }
+
+[dev-dependencies]
+maplit = "1.0"
