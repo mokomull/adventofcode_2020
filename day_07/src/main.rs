@@ -1,5 +1,6 @@
+use prelude::*;
+
 use std::collections::{HashMap, HashSet};
-use std::io::BufRead;
 
 use itertools::Itertools;
 
@@ -8,11 +9,8 @@ fn main() {
 }
 
 fn do_main(filename: &str) {
-    let file = std::fs::File::open(filename).expect("could not open the input");
-
-    let input = std::io::BufReader::new(file)
-        .lines()
-        .map(|line| parse_line(&line.expect("could not read a line")))
+    let input = read_lines_from_file(filename)
+        .map(|line| parse_line(&line))
         .collect::<Vec<_>>();
 
     let mut can_contain_gold = HashSet::new();

@@ -1,5 +1,6 @@
+use prelude::*;
+
 use std::collections::HashMap;
-use std::io::BufRead;
 
 use regex::Regex;
 
@@ -8,12 +9,9 @@ fn main() {
 }
 
 fn do_main(filename: &str) {
-    let file = std::fs::File::open(filename).expect("could not open the input");
     let mut passports: Vec<HashMap<String, String>> = Vec::new();
     let mut this = HashMap::new();
-    for line in std::io::BufReader::new(file).lines() {
-        let line = line.expect("could not read line");
-
+    for line in read_lines_from_file(filename) {
         if line == "" {
             passports.push(this);
             this = HashMap::new();

@@ -1,5 +1,6 @@
+use prelude::*;
+
 use std::collections::HashSet;
-use std::io::{BufRead, BufReader};
 
 // use itertools::Itertools;
 
@@ -8,11 +9,7 @@ fn main() {
 }
 
 fn do_main(filename: &str) {
-    let file = std::fs::File::open(filename).expect("could not open the input");
-    let instructions: Vec<Instruction> = BufReader::new(file)
-        .lines()
-        .map(|line| line.expect("could not read a line").into())
-        .collect();
+    let instructions: Vec<Instruction> = read_lines_from_file(filename).map(Into::into).collect();
 
     let part1 = run(&instructions);
     dbg!(&part1);

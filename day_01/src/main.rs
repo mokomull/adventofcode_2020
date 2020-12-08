@@ -1,4 +1,4 @@
-use std::io::BufRead;
+use prelude::*;
 
 use itertools::Itertools;
 
@@ -7,13 +7,10 @@ fn main() {
 }
 
 fn do_main(filename: &str) {
-    let file = std::fs::File::open(filename).expect("could not open the input");
     let mut expenses = Vec::new();
-    for line in std::io::BufReader::new(file).lines() {
-        if let Ok(line) = line {
-            if let Ok(expense) = line.as_str().trim().parse::<isize>() {
-                expenses.push(expense);
-            }
+    for line in read_lines_from_file(filename) {
+        if let Ok(expense) = line.as_str().trim().parse::<isize>() {
+            expenses.push(expense);
         }
     }
 

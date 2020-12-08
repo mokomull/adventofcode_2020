@@ -1,4 +1,4 @@
-use std::io::BufRead;
+use prelude::*;
 
 fn main() {
     do_main("inputs/day_02.txt");
@@ -13,18 +13,15 @@ struct Password {
 }
 
 fn do_main(filename: &str) {
-    let file = std::fs::File::open(filename).expect("could not open the input");
     let mut passwords = Vec::new();
-    for line in std::io::BufReader::new(file).lines() {
-        if let Ok(line) = line {
-            let pieces = line.trim().split(&['-', ' ', ':'][..]).collect::<Vec<_>>();
-            passwords.push(Password {
-                low: pieces[0].parse().unwrap(),
-                high: pieces[1].parse().unwrap(),
-                c: pieces[2].chars().next().unwrap(),
-                password: pieces[4].to_owned(),
-            })
-        }
+    for line in read_lines_from_file(filename) {
+        let pieces = line.trim().split(&['-', ' ', ':'][..]).collect::<Vec<_>>();
+        passwords.push(Password {
+            low: pieces[0].parse().unwrap(),
+            high: pieces[1].parse().unwrap(),
+            c: pieces[2].chars().next().unwrap(),
+            password: pieces[4].to_owned(),
+        })
     }
 
     let part1 = passwords

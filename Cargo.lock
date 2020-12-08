@@ -14,15 +14,22 @@ name = "day_01"
 version = "0.1.0"
 dependencies = [
  "itertools",
+ "prelude",
 ]
 
 [[package]]
 name = "day_02"
 version = "0.1.0"
+dependencies = [
+ "prelude",
+]
 
 [[package]]
 name = "day_03"
 version = "0.1.0"
+dependencies = [
+ "prelude",
+]
 
 [[package]]
 name = "day_04"
@@ -30,22 +37,30 @@ version = "0.1.0"
 dependencies = [
  "lazy_static",
  "maplit",
+ "prelude",
  "regex",
 ]
 
 [[package]]
 name = "day_05"
 version = "0.1.0"
+dependencies = [
+ "prelude",
+]
 
 [[package]]
 name = "day_06"
 version = "0.1.0"
+dependencies = [
+ "prelude",
+]
 
 [[package]]
 name = "day_07"
 version = "0.1.0"
 dependencies = [
  "itertools",
+ "prelude",
 ]
 
 [[package]]
@@ -53,6 +68,7 @@ name = "day_08"
 version = "0.1.0"
 dependencies = [
  "itertools",
+ "prelude",
 ]
 
 [[package]]
@@ -87,6 +103,10 @@ name = "memchr"
 version = "2.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0ee1c47aaa256ecabcaea351eae4a9b01ef39ed810004e298d2511ed284b1525"
+
+[[package]]
+name = "prelude"
+version = "0.1.0"
 
 [[package]]
 name = "regex"

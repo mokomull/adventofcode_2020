@@ -1,21 +1,16 @@
+use prelude::*;
+
 use std::collections::HashSet;
-use std::io::BufRead;
 
 fn main() {
     do_main("inputs/day_06.txt");
 }
 
 fn do_main(filename: &str) {
-    let file = std::fs::File::open(filename).expect("could not open the input");
     let mut groups = Vec::new();
     let mut this = Vec::new();
 
-    for line in std::io::BufReader::new(file)
-        .lines()
-        .chain(std::iter::once(Ok("".to_owned())))
-    {
-        let line = line.expect("could not read line");
-
+    for line in read_lines_from_file(filename).chain(std::iter::once("".to_owned())) {
         if line == "" {
             groups.push(this);
             this = Vec::new();

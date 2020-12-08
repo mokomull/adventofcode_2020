@@ -1,4 +1,4 @@
-use std::io::BufRead;
+use prelude::*;
 
 fn main() {
     do_main("inputs/day_03.txt");
@@ -12,10 +12,8 @@ enum Cell {
 fn do_main(filename: &str) {
     use Cell::*;
 
-    let file = std::fs::File::open(filename).expect("could not open the input");
     let mut map: Vec<Vec<Cell>> = Vec::new();
-    for line in std::io::BufReader::new(file).lines() {
-        let line = line.expect("could not read line");
+    for line in read_lines_from_file(filename) {
         let row = line
             .chars()
             .map(|c| match c {

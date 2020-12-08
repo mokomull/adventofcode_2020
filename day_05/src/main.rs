@@ -1,17 +1,12 @@
-use std::io::BufRead;
+use prelude::*;
 
 fn main() {
     do_main("inputs/day_05.txt");
 }
 
 fn do_main(filename: &str) {
-    let file = std::fs::File::open(filename).expect("could not open the input");
-    let seats = std::io::BufReader::new(file)
-        .lines()
-        .map(|line| {
-            let line = line.expect("could not read line");
-            seat_from_directions(&line)
-        })
+    let seats = read_lines_from_file(filename)
+        .map(|line| seat_from_directions(&line))
         .map(|(row, column)| row * 8 + column)
         .collect::<Vec<_>>();
 
