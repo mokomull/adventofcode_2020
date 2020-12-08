@@ -1,7 +1,5 @@
 use prelude::*;
 
-use itertools::Itertools;
-
 fn main() {
     do_main("inputs/day_01.txt");
 }

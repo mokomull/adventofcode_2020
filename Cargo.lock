@@ -13,7 +13,6 @@ dependencies = [
 name = "day_01"
 version = "0.1.0"
 dependencies = [
- "itertools",
  "prelude",
 ]
 
@@ -38,7 +37,6 @@ dependencies = [
  "lazy_static",
  "maplit",
  "prelude",
- "regex",
 ]
 
 [[package]]
@@ -59,7 +57,6 @@ dependencies = [
 name = "day_07"
 version = "0.1.0"
 dependencies = [
- "itertools",
  "prelude",
 ]
 
@@ -67,7 +64,6 @@ dependencies = [
 name = "day_08"
 version = "0.1.0"
 dependencies = [
- "itertools",
  "prelude",
 ]
 
@@ -107,6 +103,10 @@ checksum = "0ee1c47aaa256ecabcaea351eae4a9b01ef39ed810004e298d2511ed284b1525"
 [[package]]
 name = "prelude"
 version = "0.1.0"
+dependencies = [
+ "itertools",
+ "regex",
+]
 
 [[package]]
 name = "regex"

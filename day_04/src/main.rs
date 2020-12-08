@@ -1,7 +1,5 @@
 use prelude::*;
 
-use regex::Regex;
-
 fn main() {
     do_main("inputs/day_04.txt");
 }

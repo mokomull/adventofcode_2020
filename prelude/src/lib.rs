@@ -1,5 +1,8 @@
 use std::io::{BufRead, BufReader};
 
+pub use itertools::Itertools;
+pub use regex::Regex;
+
 pub use std::collections::{HashMap, HashSet};
 
 pub fn read_lines_from_file<P: AsRef<std::path::Path>>(
