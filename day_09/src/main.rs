@@ -35,7 +35,7 @@ fn do_main(filename: &str) {
 
     'out: for distance in 0..sums.len() {
         for (i, sum) in sums.iter_mut().enumerate() {
-            if sum == part1.unwrap() {
+            if sum == part1.unwrap() && distance > 0 {
                 part2 = Some(input[i] + input[i + distance]);
                 break 'out;
             }
