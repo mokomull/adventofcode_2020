@@ -28,6 +28,7 @@ fn do_main(filename: &str) {
     }
 
     dbg!(part1);
+    assert_eq!(part1, Some(&22477624));
 
     let mut part2 = None;
 
@@ -53,4 +54,13 @@ fn do_main(filename: &str) {
     }
 
     dbg!(part2);
+    assert_eq!(part2, Some(2980044));
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_09.txt");
+    }
 }
