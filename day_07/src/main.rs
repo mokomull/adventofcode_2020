@@ -15,12 +15,10 @@ fn do_main(filename: &str) {
     while !to_search.is_empty() {
         let target = to_search.pop().unwrap();
 
-        for (outer_bag, _) in input.iter().filter(|&(_outer, inners)| {
-            inners
-                .iter()
-                .find(|&(_count, kind)| kind == target)
-                .is_some()
-        }) {
+        for (outer_bag, _) in input
+            .iter()
+            .filter(|&(_outer, inners)| inners.iter().any(|(_count, kind)| kind == target))
+        {
             if can_contain_gold.insert(outer_bag) {
                 to_search.push(outer_bag);
             }

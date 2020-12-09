@@ -84,7 +84,7 @@ where
         let argument = argument
             .expect("argument was not provided")
             .parse()
-            .expect(&format!("invalid integer in line {}", value));
+            .unwrap_or_else(|_| panic!("invalid integer in line {}", value));
         match opcode {
             Some("acc") => Instruction::Acc(argument),
             Some("jmp") => Instruction::Jmp(argument),

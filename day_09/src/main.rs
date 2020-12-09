@@ -45,7 +45,7 @@ fn do_main(filename: &str) {
             }
 
             if let Some(new) = input.get(i + distance + 1) {
-                *sum = *sum + new;
+                *sum += new;
             }
         }
 
