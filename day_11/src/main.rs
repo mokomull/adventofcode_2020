@@ -13,6 +13,7 @@ fn do_main(filename: &str) {
     let mut input = orig_input.clone();
     loop {
         let mut new_seats = input.clone();
+        let mut changed = false;
 
         for i in 0..input.len() {
             for j in 0..input[i].len() {
@@ -57,11 +58,13 @@ fn do_main(filename: &str) {
                     Seat::Occupied => {
                         if occupied >= 4 {
                             new_seats[i][j] = Seat::Empty;
+                            changed = true;
                         }
                     }
                     Seat::Empty => {
                         if occupied == 0 {
                             new_seats[i][j] = Seat::Occupied;
+                            changed = true;
                         }
                     }
                     Seat::Floor => (), /* unchanged */
@@ -69,7 +72,7 @@ fn do_main(filename: &str) {
             }
         }
 
-        if input == new_seats {
+        if !changed {
             break;
         }
         input = new_seats;
@@ -85,6 +88,7 @@ fn do_main(filename: &str) {
     let mut input = orig_input.clone();
     loop {
         let mut new_seats = input.clone();
+        let mut changed = false;
 
         for i in 0..input.len() {
             for j in 0..input[i].len() {
@@ -126,11 +130,13 @@ fn do_main(filename: &str) {
                     Seat::Occupied => {
                         if occupied >= 5 {
                             new_seats[i][j] = Seat::Empty;
+                            changed = true;
                         }
                     }
                     Seat::Empty => {
                         if occupied == 0 {
                             new_seats[i][j] = Seat::Occupied;
+                            changed = true;
                         }
                     }
                     Seat::Floor => (), /* unchanged */
@@ -138,7 +144,7 @@ fn do_main(filename: &str) {
             }
         }
 
-        if input == new_seats {
+        if !changed {
             break;
         }
         input = new_seats;
