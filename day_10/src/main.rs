@@ -30,14 +30,17 @@ fn do_main(filename: &str) {
     let part1 = one * (three + 1); // + 1 due to the "built in" one being one-higher
     dbg!(part1);
 
-    let mut ways = 1;
-    for i in 0..(input.len() - 1) {
-        ways *= input
-            .iter()
-            .skip(i + 1)
-            .take(3)
-            .filter(|&next| *next <= input[i] + 3)
-            .count();
+    let mut ways = vec![0u64; input.len()];
+    ways[0] = 1;
+    for i in 1..input.len() {
+        let this = input[i];
+        for j in i.saturating_sub(3)..i {
+            let prev = input[j];
+            if prev < this - 3 {
+                continue;
+            }
+            ways[i] += ways[j];
+        }
     }
-    dbg!(ways);
+    dbg!(ways[ways.len() - 1]);
 }
