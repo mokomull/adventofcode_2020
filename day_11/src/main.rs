@@ -6,10 +6,11 @@ fn main() {
 }
 
 fn do_main(filename: &str) {
-    let mut input: Vec<Vec<Seat>> = read_lines_from_file(filename)
+    let orig_input: Vec<Vec<Seat>> = read_lines_from_file(filename)
         .map(|line| line.chars().map(Seat::from).collect())
         .collect();
 
+    let mut input = orig_input.clone();
     loop {
         let mut new_seats = input.clone();
 
@@ -79,6 +80,74 @@ fn do_main(filename: &str) {
         .map(|row| row.iter().filter(|&seat| seat == &Seat::Occupied).count())
         .sum::<usize>();
     dbg!(part1);
+
+    let mut input = orig_input.clone();
+    loop {
+        let mut new_seats = input.clone();
+
+        for i in 0..input.len() {
+            for j in 0..input[i].len() {
+                let mut occupied = 0;
+
+                for (dx, dy) in &[
+                    (-1, -1),
+                    (-1, 0),
+                    (-1, 1),
+                    (0, 1),
+                    (1, 1),
+                    (1, 0),
+                    (1, -1),
+                    (0, -1),
+                ] {
+                    let mut x = i as isize + dx;
+                    let mut y = j as isize + dy;
+
+                    while x >= 0
+                        && x < input.len() as isize
+                        && y >= 0
+                        && y < input[i].len() as isize
+                    {
+                        if input[x as usize][y as usize] == Seat::Occupied {
+                            occupied += 1;
+                            break;
+                        }
+
+                        if input[x as usize][y as usize] == Seat::Empty {
+                            break;
+                        }
+
+                        x += dx;
+                        y += dy;
+                    }
+                }
+
+                match input[i][j] {
+                    Seat::Occupied => {
+                        if occupied >= 5 {
+                            new_seats[i][j] = Seat::Empty;
+                        }
+                    }
+                    Seat::Empty => {
+                        if occupied == 0 {
+                            new_seats[i][j] = Seat::Occupied;
+                        }
+                    }
+                    Seat::Floor => (), /* unchanged */
+                }
+            }
+        }
+
+        if input == new_seats {
+            break;
+        }
+        input = new_seats;
+    }
+
+    let part2 = input
+        .iter()
+        .map(|row| row.iter().filter(|&seat| seat == &Seat::Occupied).count())
+        .sum::<usize>();
+    dbg!(part2);
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
