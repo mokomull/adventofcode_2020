@@ -109,6 +109,10 @@ fn do_main(filename: &str) {
                             break;
                         }
 
+                        if input[x as usize][y as usize] == Seat::Empty {
+                            break;
+                        }
+
                         x += dx;
                         y += dy;
                     }
