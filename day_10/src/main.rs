@@ -29,6 +29,7 @@ fn do_main(filename: &str) {
 
     let part1 = one * (three + 1); // + 1 due to the "built in" one being one-higher
     dbg!(part1);
+    assert_eq!(part1, 1885);
 
     let mut ways = vec![0u64; input.len()];
     ways[0] = 1;
@@ -42,5 +43,15 @@ fn do_main(filename: &str) {
             ways[i] += ways[j];
         }
     }
-    dbg!(ways[ways.len() - 1]);
+    let part2 = ways.last().unwrap();
+    dbg!(part2);
+    assert_eq!(part2, &2024782584832);
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_10.txt");
+    }
 }
