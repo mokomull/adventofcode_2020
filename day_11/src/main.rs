@@ -102,7 +102,10 @@ fn do_main(filename: &str) {
                     let mut x = i as isize + dx;
                     let mut y = j as isize + dy;
 
-                    while x > 0 && x < input.len() as isize && y > 0 && y < input[i].len() as isize
+                    while x >= 0
+                        && x < input.len() as isize
+                        && y >= 0
+                        && y < input[i].len() as isize
                     {
                         if input[x as usize][y as usize] == Seat::Occupied {
                             occupied += 1;
