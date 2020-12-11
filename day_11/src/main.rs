@@ -80,6 +80,7 @@ fn do_main(filename: &str) {
         .map(|row| row.iter().filter(|&seat| seat == &Seat::Occupied).count())
         .sum::<usize>();
     dbg!(part1);
+    assert_eq!(part1, 2281);
 
     let mut input = orig_input.clone();
     loop {
@@ -148,6 +149,7 @@ fn do_main(filename: &str) {
         .map(|row| row.iter().filter(|&seat| seat == &Seat::Occupied).count())
         .sum::<usize>();
     dbg!(part2);
+    assert_eq!(part2, 2085);
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -165,5 +167,13 @@ impl From<char> for Seat {
             '#' => Seat::Occupied,
             x => panic!("unexpected input: {}", x),
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_11.txt")
     }
 }
