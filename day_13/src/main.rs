@@ -39,11 +39,11 @@ fn do_main(filename: &str) {
     let part1 = (t - timestamp) * bus;
     dbg!(part1);
 
-    let part2 = (0..)
+    let part2 = (0u64..)
         .filter(|t| {
             buses.iter().enumerate().all(|(dt, &bus)| match bus {
                 None => true,
-                Some(bus_id) => (t + dt as u32) % bus_id == 0,
+                Some(bus_id) => (t + dt as u64) % bus_id as u64 == 0,
             })
         })
         .next()
