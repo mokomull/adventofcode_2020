@@ -58,6 +58,7 @@ fn do_main(filename: &str) {
 
     let part1 = x.abs() + y.abs();
     dbg!(part1);
+    assert_eq!(part1, 1838);
 
     // almost exactly the same, except most movements move the waypoint, not the
     // ship.
@@ -111,6 +112,7 @@ fn do_main(filename: &str) {
 
     let part2 = x.abs() + y.abs();
     dbg!(part2);
+    assert_eq!(part2, 89936);
 }
 
 enum Instruction {
@@ -137,5 +139,13 @@ impl From<&str> for Instruction {
             'F' => Forward(value),
             x => panic!("Unexpected instruction: {}", x),
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_12.txt");
     }
 }
