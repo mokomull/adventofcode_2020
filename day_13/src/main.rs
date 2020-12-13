@@ -38,4 +38,15 @@ fn do_main(filename: &str) {
     let (t, bus) = chosen.expect("no suitable bus was found");
     let part1 = (t - timestamp) * bus;
     dbg!(part1);
+
+    let part2 = (0..)
+        .filter(|t| {
+            buses.iter().enumerate().all(|(dt, &bus)| match bus {
+                None => true,
+                Some(bus_id) => (t + dt as u32) % bus_id == 0,
+            })
+        })
+        .next()
+        .expect("no suitable timestamp was found");
+    dbg!(part2);
 }
