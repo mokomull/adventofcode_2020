@@ -41,6 +41,7 @@ fn do_main(filename: &str) {
 
     let part1 = memory.values().sum::<u64>();
     dbg!(part1);
+    assert_eq!(part1, 8332632930672);
 
     let mut memory = HashMap::new();
     let mut set = Vec::new();
@@ -85,6 +86,7 @@ fn do_main(filename: &str) {
 
     let part2 = memory.values().sum::<u64>();
     dbg!(part2);
+    assert_eq!(part2, 4753238784664);
 }
 
 enum Instruction {
@@ -123,5 +125,13 @@ impl From<&str> for Instruction {
             .parse()
             .expect("not an integer");
         Mem(address, value.parse().expect("invalid integer"))
+    }
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_14.txt");
     }
 }
