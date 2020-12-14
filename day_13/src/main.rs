@@ -39,15 +39,37 @@ fn do_main(filename: &str) {
     let part1 = (t - timestamp) * bus;
     dbg!(part1);
 
-    let part2 = (0u64..)
-        .filter(|t| {
-            buses.iter().enumerate().all(|(dt, &bus)| match bus {
-                None => true,
-                Some(bus_id) => (t + dt as u64) % bus_id as u64 == 0,
-            })
+    let (part2, _bus_product) = buses
+        .iter()
+        .cloned()
+        .enumerate()
+        .filter_map(|(idx, bus)| {
+            // fix up types so I can pretend everything is an i64
+            //
+            // and fix up indices -- the problem gives t + idx == 0 (mod bus_id),
+            // which means t is congruent to -idx (mod bus_id).  Represent with
+            // (remainder, modulus) tuples.
+            match bus {
+                None => None,
+                Some(bus_id) => {
+                    let bus_id = bus_id as i64;
+                    let remainder = (-(idx as i64)).rem_euclid(bus_id);
+                    Some((remainder, bus_id))
+                }
+            }
         })
-        .next()
-        .expect("no suitable timestamp was found");
+        .fold1(|(a0, n0), (a1, n1)| {
+            // solve Chinese Remainder Theorem for the two buses:
+            //   t = a0 (mod n0)
+            //   t = a1 (mod n1)
+            // and continue with the equivalent t mod (n0 * n1)
+            let (m0, _m1) = extended_euclidean(n0, n1);
+            let t = a0 + (a1 - a0) * m0 * n0;
+            let new_n = n0 * n1;
+            (t.rem_euclid(new_n), new_n)
+        })
+        .expect("there were no buses");
+
     dbg!(part2);
 }
 
