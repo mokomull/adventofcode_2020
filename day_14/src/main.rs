@@ -41,6 +41,50 @@ fn do_main(filename: &str) {
 
     let part1 = memory.values().sum::<u64>();
     dbg!(part1);
+
+    let mut memory = HashMap::new();
+    let mut set = Vec::new();
+    let mut clear = Vec::new();
+
+    for i in &input {
+        match i {
+            // Mask is stored away the same as in part 1
+            Mask {
+                set: new_set,
+                clear: new_clear,
+            } => {
+                set = new_set.clone();
+                clear = new_clear.clone();
+            }
+
+            // but handling Mem is different
+            Mem(address, value) => {
+                let mut address = *address;
+
+                for bit in &set {
+                    address |= 1 << bit;
+                }
+                let address = address;
+
+                let floating: Vec<u8> = (0..36)
+                    .filter(|i| !set.contains(i) && !clear.contains(i))
+                    .collect();
+
+                for bits in 0..(1 << floating.len()) {
+                    let mut virtual_address = address;
+
+                    for (from_bit, to_bit) in floating.iter().enumerate() {
+                        virtual_address &= !(1 << to_bit);
+                        virtual_address |= (bits & (1 << from_bit) >> from_bit) << to_bit;
+                    }
+                    memory.insert(virtual_address, *value);
+                }
+            }
+        }
+    }
+
+    let part2 = memory.values().sum::<u64>();
+    dbg!(part2);
 }
 
 enum Instruction {
