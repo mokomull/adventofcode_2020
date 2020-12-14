@@ -40,6 +40,7 @@ fn do_main(filename: &str) {
     let (t, bus) = chosen.expect("no suitable bus was found");
     let part1 = (t - timestamp) * bus;
     dbg!(part1);
+    assert_eq!(part1, 4938);
 
     let (part2, _bus_product) = buses
         .iter()
@@ -72,7 +73,8 @@ fn do_main(filename: &str) {
             (t.modpow(&1.into(), &new_n), new_n)
         })
         .expect("there were no buses");
-    dbg!(part2);
+    dbg!(&part2);
+    assert_eq!(part2, 230903629977901i64.into());
 }
 
 fn extended_euclidean(a: BigInt, b: BigInt) -> (BigInt, BigInt) {
@@ -113,5 +115,10 @@ mod test {
             super::extended_euclidean(240.into(), 23.into()),
             (7.into(), (-73).into())
         );
+    }
+
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_13.txt")
     }
 }
