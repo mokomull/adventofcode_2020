@@ -1,5 +1,7 @@
 use prelude::*;
 
+use num::bigint::BigInt;
+
 fn main() {
     do_main("inputs/day_13.txt");
 }
@@ -52,8 +54,9 @@ fn do_main(filename: &str) {
             match bus {
                 None => None,
                 Some(bus_id) => {
-                    let bus_id = bus_id as i64;
-                    let remainder = (-(idx as i64)).rem_euclid(bus_id);
+                    let bus_id: BigInt = bus_id.into();
+                    let idx: BigInt = idx.into();
+                    let remainder = (-idx).modpow(&1.into(), &bus_id);
                     Some((remainder, bus_id))
                 }
             }
@@ -63,28 +66,41 @@ fn do_main(filename: &str) {
             //   t = a0 (mod n0)
             //   t = a1 (mod n1)
             // and continue with the equivalent t mod (n0 * n1)
-            let (m0, _m1) = extended_euclidean(n0, n1);
-            let t = a0 + (a1 - a0) * m0 * n0;
+            let (m0, _m1) = extended_euclidean(n0.clone(), n1.clone());
+            let t = &a0 + (a1 - &a0) * m0 * &n0;
             let new_n = n0 * n1;
-            (t.rem_euclid(new_n), new_n)
+            (t.modpow(&1.into(), &new_n), new_n)
         })
         .expect("there were no buses");
-
     dbg!(part2);
 }
 
-fn extended_euclidean(a: i64, b: i64) -> (i64, i64) {
-    extended_euclidean_inner(a, b, 1, 0, 0, 1)
+fn extended_euclidean(a: BigInt, b: BigInt) -> (BigInt, BigInt) {
+    extended_euclidean_inner(a, b, 1.into(), 0.into(), 0.into(), 1.into())
 }
 
-fn extended_euclidean_inner(a: i64, b: i64, s0: i64, s1: i64, t0: i64, t1: i64) -> (i64, i64) {
-    if b == 0 {
-        assert_eq!(a, 1); // this algorithm makes no sense if gcd(orig_a, orig_b) != 1
+fn extended_euclidean_inner(
+    a: BigInt,
+    b: BigInt,
+    s0: BigInt,
+    s1: BigInt,
+    t0: BigInt,
+    t1: BigInt,
+) -> (BigInt, BigInt) {
+    if b == 0.into() {
+        assert_eq!(a, 1.into()); // this algorithm makes no sense if gcd(orig_a, orig_b) != 1
         return (s0, t0);
     }
 
-    let q = a / b;
-    extended_euclidean_inner(b, a - q * b, s1, s0 - q * s1, t1, t0 - q * t1)
+    let q = &a / &b;
+    extended_euclidean_inner(
+        b.clone(),
+        a - &q * b,
+        s1.clone(),
+        s0 - &q * s1,
+        t1.clone(),
+        t0 - q * t1,
+    )
 }
 
 #[cfg(test)]
@@ -93,6 +109,9 @@ mod test {
     fn euclidean() {
         // gcd(240, 23) == 1
         // 7 * 240 + -73 * 23 == 1
-        assert_eq!(super::extended_euclidean(240, 23), (7, -73));
+        assert_eq!(
+            super::extended_euclidean(240.into(), 23.into()),
+            (7.into(), (-73).into())
+        );
     }
 }
