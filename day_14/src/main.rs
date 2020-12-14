@@ -75,7 +75,7 @@ fn do_main(filename: &str) {
 
                     for (from_bit, to_bit) in floating.iter().enumerate() {
                         virtual_address &= !(1 << to_bit);
-                        virtual_address |= (bits & (1 << from_bit) >> from_bit) << to_bit;
+                        virtual_address |= ((bits & (1 << from_bit)) >> from_bit) << to_bit;
                     }
                     memory.insert(virtual_address, *value);
                 }
