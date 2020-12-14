@@ -47,7 +47,7 @@ fn do_main(filename: &str) {
         .cloned()
         .enumerate()
         .filter_map(|(idx, bus)| {
-            // fix up types so I can pretend everything is an i64
+            // fix up types so I can pretend everything is a BigInt
             //
             // and fix up indices -- the problem gives t + idx == 0 (mod bus_id),
             // which means t is congruent to -idx (mod bus_id).  Represent with
