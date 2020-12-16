@@ -63,9 +63,10 @@ fn do_main(filename: &str) {
     }
 }
 
-fn can_be_valid_field(field: i64, fields: &[FieldRange]) -> bool {
+fn can_be_valid_field(field: i64, fields: &[Field]) -> bool {
     fields.iter().any(|possible_field| {
         possible_field
+            .ranges
             .iter()
             .any(|possible_values| possible_values.contains(&field))
     })
@@ -73,9 +74,15 @@ fn can_be_valid_field(field: i64, fields: &[FieldRange]) -> bool {
 
 type FieldRange = Vec<RangeInclusive<i64>>;
 
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+struct Field {
+    name: String,
+    ranges: FieldRange,
+}
+
 #[derive(Debug)]
 struct TicketData {
-    fields: Vec<FieldRange>,
+    fields: Vec<Field>,
     my_ticket: Vec<i64>,
     nearby_tickets: Vec<Vec<i64>>,
 }
@@ -97,9 +104,10 @@ where
 
             let mut this_fields = FieldRange::new();
 
-            for range in line
-                .split(": ")
-                .skip(1)
+            let mut halves = line.split(": ");
+            let name = halves.next().expect("field name not given");
+
+            for range in halves
                 .next()
                 .expect("field values were not given")
                 .split_whitespace()
@@ -119,7 +127,10 @@ where
                 this_fields.push(RangeInclusive::new(begin, end));
             }
 
-            fields.push(this_fields)
+            fields.push(Field {
+                name: name.to_owned(),
+                ranges: this_fields,
+            })
         }
 
         // skip over "your ticket:"
