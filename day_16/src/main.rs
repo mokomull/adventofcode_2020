@@ -61,6 +61,18 @@ fn do_main(filename: &str) {
         known_fields.insert(index.unwrap(), known.unwrap());
         unknown_fields.remove(known.unwrap());
     }
+
+    let part2: i64 = known_fields
+        .iter()
+        .filter_map(|(&i, &f)| {
+            if f.name.starts_with("departure") {
+                Some(input.my_ticket[i])
+            } else {
+                None
+            }
+        })
+        .product();
+    dbg!(part2);
 }
 
 fn can_be_valid_field(field: i64, fields: &[Field]) -> bool {
