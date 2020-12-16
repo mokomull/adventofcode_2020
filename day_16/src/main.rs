@@ -35,19 +35,32 @@ fn do_main(filename: &str) {
         })
         .collect();
 
-    let mut field_assignments =
-        vec![input.fields.iter().cloned().collect::<HashSet<_>>(); input.fields.len()];
+    let mut unknown_fields = input.fields.iter().collect::<HashSet<_>>();
+    let mut known_fields = HashMap::new();
 
-    for ticket in valid_tickets {
-        for (value, possible_fields) in ticket.iter().zip(field_assignments.iter_mut()) {
-            possible_fields.retain(|range| can_be_valid_field(*value, &[range.clone()]))
+    while unknown_fields.len() > 0 {
+        let mut known = None;
+        let mut index = None;
+
+        for &field in &unknown_fields {
+            let indices = (0..input.fields.len())
+                .filter(|i| !known_fields.contains_key(i))
+                .filter(|&i| {
+                    valid_tickets
+                        .iter()
+                        .all(|&ticket| can_be_valid_field(ticket[i], &[field.clone()]))
+                })
+                .collect::<Vec<_>>();
+            if indices.len() == 1 {
+                known = Some(field);
+                index = Some(indices[0]);
+                break;
+            }
         }
-    }
 
-    dbg!(field_assignments
-        .iter()
-        .map(HashSet::len)
-        .collect::<Vec<_>>());
+        known_fields.insert(index.unwrap(), known.unwrap());
+        unknown_fields.remove(known.unwrap());
+    }
 }
 
 fn can_be_valid_field(field: i64, fields: &[FieldRange]) -> bool {
