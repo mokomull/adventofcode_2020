@@ -18,7 +18,7 @@ fn do_main(filename: &str) {
                 .filter(|&field| {
                     // none of the fields in any of the ranges can match the value in the ticket
                     // we're looking at.
-                    !can_be_valid_field(*field, &input.fields)
+                    !can_be_valid_value_for_field(*field, &input.fields)
                 })
                 .sum::<i64>()
         })
@@ -32,7 +32,7 @@ fn do_main(filename: &str) {
         .filter(|&ticket| {
             ticket
                 .iter()
-                .all(|field| can_be_valid_field(*field, &input.fields))
+                .all(|field| can_be_valid_value_for_field(*field, &input.fields))
         })
         .collect();
 
@@ -47,9 +47,9 @@ fn do_main(filename: &str) {
             let indices = (0..input.fields.len())
                 .filter(|i| !known_fields.contains_key(i))
                 .filter(|&i| {
-                    valid_tickets
-                        .iter()
-                        .all(|&ticket| can_be_valid_field(ticket[i], &[field.clone()]))
+                    valid_tickets.iter().all(|&ticket| {
+                        can_be_valid_value_for_field(ticket[i], std::iter::once(field))
+                    })
                 })
                 .collect::<Vec<_>>();
             if indices.len() == 1 {
@@ -77,12 +77,15 @@ fn do_main(filename: &str) {
     assert_eq!(part2, 51240700105297);
 }
 
-fn can_be_valid_field(field: i64, fields: &[Field]) -> bool {
-    fields.iter().any(|possible_field| {
+fn can_be_valid_value_for_field<'a, F>(value: i64, fields: F) -> bool
+where
+    F: IntoIterator<Item = &'a Field>,
+{
+    fields.into_iter().any(|possible_field| {
         possible_field
             .ranges
             .iter()
-            .any(|possible_values| possible_values.contains(&field))
+            .any(|possible_values| possible_values.contains(&value))
     })
 }
 
