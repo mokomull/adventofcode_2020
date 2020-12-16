@@ -16,11 +16,8 @@ fn nth_spoken(initial: &[i32], n: i32) -> i32 {
         }
     }
 
-    dbg!(&spoken);
-
     // Complete n-1 rounds, at which point we know what will be uttered in round n.
     for turn in (initial.len() as i32 + 1)..n {
-        dbg!(next_to_speak);
         match spoken.insert(next_to_speak, turn) {
             None => next_to_speak = 0,
             Some(prev) => next_to_speak = turn - prev,
