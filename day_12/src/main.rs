@@ -129,7 +129,7 @@ impl From<&str> for Instruction {
     fn from(input: &str) -> Instruction {
         let value = input[1..].parse().expect("input was not an integer");
 
-        match input.chars().nth(0).expect("input was empty") {
+        match input.chars().next().expect("input was empty") {
             'N' => North(value),
             'S' => South(value),
             'E' => East(value),

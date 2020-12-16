@@ -1,5 +1,4 @@
 use prelude::*;
-use std::collections::VecDeque;
 
 fn main() {
     do_main("inputs/day_11.txt");
@@ -85,7 +84,7 @@ fn do_main(filename: &str) {
     dbg!(part1);
     assert_eq!(part1, 2281);
 
-    let mut input = orig_input.clone();
+    let mut input = orig_input;
     loop {
         let mut new_seats = input.clone();
         let mut changed = false;

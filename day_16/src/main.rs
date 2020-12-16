@@ -39,7 +39,7 @@ fn do_main(filename: &str) {
     let mut unknown_fields = input.fields.iter().collect::<HashSet<_>>();
     let mut known_fields = HashMap::new();
 
-    while unknown_fields.len() > 0 {
+    while !unknown_fields.is_empty() {
         let mut known = None;
         let mut index = None;
 
@@ -48,7 +48,7 @@ fn do_main(filename: &str) {
                 .filter(|i| !known_fields.contains_key(i))
                 .filter(|&i| {
                     valid_tickets.iter().all(|&ticket| {
-                        can_be_valid_value_for_field(ticket[i], std::iter::once(field))
+                        can_be_valid_value_for_field(ticket[i], vec![field].drain(..))
                     })
                 })
                 .collect::<Vec<_>>();
@@ -130,7 +130,7 @@ where
                 .split_whitespace()
                 .step_by(2)
             {
-                let mut ends = range.split("-");
+                let mut ends = range.split('-');
                 let begin = ends
                     .next()
                     .expect("no begin")
@@ -157,7 +157,7 @@ where
             .next()
             .expect("your ticket was not found")
             .as_ref()
-            .split(",")
+            .split(',')
             .map(|s| s.parse().expect("not an integer"))
             .collect();
 
@@ -168,7 +168,7 @@ where
         let nearby_tickets = input
             .map(|s| {
                 s.as_ref()
-                    .split(",")
+                    .split(',')
                     .map(|s| s.parse().expect("not an integer"))
                     .collect()
             })

@@ -11,7 +11,7 @@ fn do_main(filename: &str) {
 
     // we always start with 0
     input.push(0);
-    input.sort();
+    input.sort_unstable();
     let input = input;
 
     let mut one = 0;

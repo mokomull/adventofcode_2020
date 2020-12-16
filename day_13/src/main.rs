@@ -17,7 +17,7 @@ fn do_main(filename: &str) {
     let buses: Vec<Option<u32>> = lines
         .next()
         .expect("list of buses is empty")
-        .split(",")
+        .split(',')
         .map(|bus| match bus {
             "x" => None,
             frequency => Some(frequency.parse().expect("bus was not an integer")),
