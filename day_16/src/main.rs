@@ -18,16 +18,45 @@ fn do_main(filename: &str) {
                 .filter(|&field| {
                     // none of the fields in any of the ranges can match the value in the ticket
                     // we're looking at.
-                    input.fields.iter().all(|possible_field| {
-                        possible_field
-                            .iter()
-                            .all(|possible_values| !possible_values.contains(field))
-                    })
+                    !can_be_valid_field(*field, &input.fields)
                 })
                 .sum::<i64>()
         })
         .sum();
     dbg!(part1);
+
+    let valid_tickets: Vec<&Vec<i64>> = input
+        .nearby_tickets
+        .iter()
+        .filter(|&ticket| {
+            ticket
+                .iter()
+                .all(|field| can_be_valid_field(*field, &input.fields))
+        })
+        .collect();
+
+    let mut field_order = None;
+
+    for order in input.fields.iter().permutations(input.fields.len()) {
+        dbg!(&order);
+        if valid_tickets.iter().all(|&ticket| {
+            ticket
+                .iter()
+                .zip(order.iter())
+                .all(|(ticket_value, ranges)| can_be_valid_field(*ticket_value, &[ranges.to_vec()]))
+        }) {
+            field_order = Some(order);
+            break;
+        }
+    }
+}
+
+fn can_be_valid_field(field: i64, fields: &[FieldRange]) -> bool {
+    fields.iter().any(|possible_field| {
+        possible_field
+            .iter()
+            .any(|possible_values| possible_values.contains(&field))
+    })
 }
 
 type FieldRange = Vec<RangeInclusive<i64>>;
