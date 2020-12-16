@@ -8,10 +8,31 @@ fn main() {
 
 fn do_main(filename: &str) {
     let input: TicketData = read_lines_from_file(filename).into();
+
+    let part1: i64 = input
+        .nearby_tickets
+        .iter()
+        .map(|ticket| {
+            ticket
+                .iter()
+                .filter(|&field| {
+                    // none of the fields in any of the ranges can match the value in the ticket
+                    // we're looking at.
+                    input.fields.iter().all(|possible_field| {
+                        possible_field
+                            .iter()
+                            .all(|possible_values| !possible_values.contains(field))
+                    })
+                })
+                .sum::<i64>()
+        })
+        .sum();
+    dbg!(part1);
 }
 
 type FieldRange = Vec<RangeInclusive<i64>>;
 
+#[derive(Debug)]
 struct TicketData {
     fields: Vec<FieldRange>,
     my_ticket: Vec<i64>,
@@ -35,7 +56,14 @@ where
 
             let mut this_fields = FieldRange::new();
 
-            for range in line.split_whitespace().skip(1).step_by(2) {
+            for range in line
+                .split(": ")
+                .skip(1)
+                .next()
+                .expect("field values were not given")
+                .split_whitespace()
+                .step_by(2)
+            {
                 let mut ends = range.split("-");
                 let begin = ends
                     .next()
