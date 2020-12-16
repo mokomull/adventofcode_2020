@@ -35,20 +35,19 @@ fn do_main(filename: &str) {
         })
         .collect();
 
-    let mut field_order = None;
+    let mut field_assignments =
+        vec![input.fields.iter().cloned().collect::<HashSet<_>>(); input.fields.len()];
 
-    for order in input.fields.iter().permutations(input.fields.len()) {
-        dbg!(&order);
-        if valid_tickets.iter().all(|&ticket| {
-            ticket
-                .iter()
-                .zip(order.iter())
-                .all(|(ticket_value, ranges)| can_be_valid_field(*ticket_value, &[ranges.to_vec()]))
-        }) {
-            field_order = Some(order);
-            break;
+    for ticket in valid_tickets {
+        for (value, possible_fields) in ticket.iter().zip(field_assignments.iter_mut()) {
+            possible_fields.retain(|range| can_be_valid_field(*value, &[range.clone()]))
         }
     }
+
+    dbg!(field_assignments
+        .iter()
+        .map(HashSet::len)
+        .collect::<Vec<_>>());
 }
 
 fn can_be_valid_field(field: i64, fields: &[FieldRange]) -> bool {
