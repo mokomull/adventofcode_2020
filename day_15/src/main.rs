@@ -4,6 +4,9 @@ fn main() {
     let input = vec![2, 0, 1, 7, 4, 14, 18];
     let part1 = nth_spoken(&input, 2020);
     dbg!(part1);
+
+    let part2 = nth_spoken(&input, 30000000);
+    dbg!(part2);
 }
 
 fn nth_spoken(initial: &[i32], n: i32) -> i32 {
