@@ -24,6 +24,7 @@ fn do_main(filename: &str) {
         })
         .sum();
     dbg!(part1);
+    assert_eq!(part1, 23054);
 
     let valid_tickets: Vec<&Vec<i64>> = input
         .nearby_tickets
@@ -73,6 +74,7 @@ fn do_main(filename: &str) {
         })
         .product();
     dbg!(part2);
+    assert_eq!(part2, 51240700105297);
 }
 
 fn can_be_valid_field(field: i64, fields: &[Field]) -> bool {
@@ -174,5 +176,13 @@ where
             my_ticket,
             nearby_tickets,
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_16.txt");
     }
 }
