@@ -72,7 +72,7 @@ fn step(board: &mut HashMap<(isize, isize, isize), bool>) {
                         }
                     }
                     true => {
-                        if (2_i32..=3_i32).contains(&neighbors) {
+                        if !(2_i32..=3_i32).contains(&neighbors) {
                             new_board.insert((i, j, k), false);
                         }
                     }
