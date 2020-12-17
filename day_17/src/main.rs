@@ -9,10 +9,12 @@ fn do_main(filename: &str) {
         .map(|line| line.chars().map(|c| c == '#').collect())
         .collect();
 
-    let mut board = HashMap::new();
+    let mut board = HashSet::new();
     for (i, row) in input.iter().enumerate() {
         for (j, cell) in row.iter().enumerate() {
-            board.insert((0, i as isize, j as isize), *cell);
+            if *cell {
+                board.insert((0, i as isize, j as isize));
+            }
         }
     }
 
@@ -20,42 +22,44 @@ fn do_main(filename: &str) {
         step(&mut board);
     }
 
-    let part1 = board.values().filter(|&x| *x).count();
+    let part1 = board.len();
     dbg!(part1);
     assert_eq!(part1, 382);
 
-    let mut board = HashMap::new();
+    let mut board = HashSet::new();
     for (i, row) in input.iter().enumerate() {
         for (j, cell) in row.iter().enumerate() {
-            board.insert((0, 0, i as isize, j as isize), *cell);
+            if *cell {
+                board.insert((0, 0, i as isize, j as isize));
+            }
         }
     }
     for _ in 0..6 {
         step_4d(&mut board);
     }
 
-    let part2 = board.values().filter(|&x| *x).count();
+    let part2 = board.len();
     dbg!(part2);
     assert_eq!(part2, 2552);
 }
 
-fn step(board: &mut HashMap<(isize, isize, isize), bool>) {
+fn step(board: &mut HashSet<(isize, isize, isize)>) {
     let mut new_board = board.clone();
 
     let (min_i, max_i) = board
-        .keys()
+        .iter()
         .map(|(i, _, _)| *i)
         .minmax()
         .into_option()
         .unwrap();
     let (min_j, max_j) = board
-        .keys()
+        .iter()
         .map(|(_, j, _)| *j)
         .minmax()
         .into_option()
         .unwrap();
     let (min_k, max_k) = board
-        .keys()
+        .iter()
         .map(|(_, _, k)| *k)
         .minmax()
         .into_option()
@@ -75,20 +79,20 @@ fn step(board: &mut HashMap<(isize, isize, isize), bool>) {
                 .multi_cartesian_product()
                 {
                     let target = (*coords[0], *coords[1], *coords[2]);
-                    if target != (i, j, k) && *board.get(&target).unwrap_or(&false) {
+                    if target != (i, j, k) && board.contains(&target) {
                         neighbors += 1;
                     }
                 }
 
-                match *board.get(&(i, j, k)).unwrap_or(&false) {
+                match board.contains(&(i, j, k)) {
                     false => {
                         if neighbors == 3 {
-                            new_board.insert((i, j, k), true);
+                            new_board.insert((i, j, k));
                         }
                     }
                     true => {
                         if !(2_i32..=3_i32).contains(&neighbors) {
-                            new_board.insert((i, j, k), false);
+                            new_board.remove(&(i, j, k));
                         }
                     }
                 }
@@ -99,29 +103,29 @@ fn step(board: &mut HashMap<(isize, isize, isize), bool>) {
     std::mem::swap(board, &mut new_board);
 }
 
-fn step_4d(board: &mut HashMap<(isize, isize, isize, isize), bool>) {
+fn step_4d(board: &mut HashSet<(isize, isize, isize, isize)>) {
     let mut new_board = board.clone();
 
     let (min_i, max_i) = board
-        .keys()
+        .iter()
         .map(|(i, _, _, _)| *i)
         .minmax()
         .into_option()
         .unwrap();
     let (min_j, max_j) = board
-        .keys()
+        .iter()
         .map(|(_, j, _, _)| *j)
         .minmax()
         .into_option()
         .unwrap();
     let (min_k, max_k) = board
-        .keys()
+        .iter()
         .map(|(_, _, k, _)| *k)
         .minmax()
         .into_option()
         .unwrap();
     let (min_w, max_w) = board
-        .keys()
+        .iter()
         .map(|(_, _, _, w)| *w)
         .minmax()
         .into_option()
@@ -143,20 +147,20 @@ fn step_4d(board: &mut HashMap<(isize, isize, isize, isize), bool>) {
                     .multi_cartesian_product()
                     {
                         let target = (*coords[0], *coords[1], *coords[2], *coords[3]);
-                        if target != (i, j, k, w) && *board.get(&target).unwrap_or(&false) {
+                        if target != (i, j, k, w) && board.contains(&target) {
                             neighbors += 1;
                         }
                     }
 
-                    match *board.get(&(i, j, k, w)).unwrap_or(&false) {
+                    match board.contains(&(i, j, k, w)) {
                         false => {
                             if neighbors == 3 {
-                                new_board.insert((i, j, k, w), true);
+                                new_board.insert((i, j, k, w));
                             }
                         }
                         true => {
                             if !(2_i32..=3_i32).contains(&neighbors) {
-                                new_board.insert((i, j, k, w), false);
+                                new_board.remove(&(i, j, k, w));
                             }
                         }
                     }
