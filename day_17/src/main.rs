@@ -22,6 +22,7 @@ fn do_main(filename: &str) {
 
     let part1 = board.values().filter(|&x| *x).count();
     dbg!(part1);
+    assert_eq!(part1, 382);
 
     let mut board = HashMap::new();
     for (i, row) in input.iter().enumerate() {
@@ -35,6 +36,7 @@ fn do_main(filename: &str) {
 
     let part2 = board.values().filter(|&x| *x).count();
     dbg!(part2);
+    assert_eq!(part2, 2552);
 }
 
 fn step(board: &mut HashMap<(isize, isize, isize), bool>) {
@@ -164,4 +166,12 @@ fn step_4d(board: &mut HashMap<(isize, isize, isize, isize), bool>) {
     }
 
     std::mem::swap(board, &mut new_board);
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_17.txt");
+    }
 }
