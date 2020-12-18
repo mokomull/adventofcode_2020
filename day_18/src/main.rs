@@ -11,11 +11,11 @@ fn do_main(filename: &str) {
         .map(|line| parse_line(&line))
         .collect();
 
-    let part1: i32 = input.iter().map(|line| evaluate(&line)).sum();
+    let part1: i64 = input.iter().map(|line| evaluate(&line)).sum();
     dbg!(part1);
 }
 
-fn evaluate(tokens: &[Token]) -> i32 {
+fn evaluate(tokens: &[Token]) -> i64 {
     let mut rpn_queue = Vec::new();
     let mut op_stack = Vec::new();
 
@@ -43,7 +43,7 @@ fn evaluate(tokens: &[Token]) -> i32 {
         rpn_queue.push(x);
     }
 
-    let mut stack: Vec<i32> = Vec::new();
+    let mut stack: Vec<i64> = Vec::new();
 
     for token in rpn_queue {
         match token {
@@ -71,7 +71,7 @@ fn evaluate(tokens: &[Token]) -> i32 {
 
 #[derive(Debug, Eq, PartialEq)]
 enum Token {
-    Integer(i32),
+    Integer(i64),
     Plus,
     Asterisk,
     LeftParen,
