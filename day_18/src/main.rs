@@ -11,36 +11,41 @@ fn do_main(filename: &str) {
         .map(|line| parse_line(&line))
         .collect();
 
-    let part1: i64 = input.iter().map(|line| evaluate(&line)).sum();
+    let part1: i64 = input
+        .iter()
+        .map(|line| evaluate(&line, &HashMap::new()))
+        .sum();
     dbg!(part1);
     assert_eq!(part1, 701339185745);
 
-    let part2: i64 = input.iter().map(|line| evaluate(&line)).sum();
+    let part2: i64 = input
+        .iter()
+        .map(|line| evaluate(&line, &vec![(Asterisk, 1), (Plus, 2)].drain(..).collect()))
+        .sum();
     dbg!(part2);
     assert_eq!(part2, 4208490449905);
 }
 
-fn evaluate(tokens: &[Token]) -> i64 {
+fn evaluate(tokens: &[Token], precedence: &HashMap<Token, i32>) -> i64 {
     let mut rpn_queue = Vec::new();
     let mut op_stack = Vec::new();
 
     for token in tokens {
         match token {
             t @ Integer(_) => rpn_queue.push(t),
-            Plus => {
+            t @ Plus | t @ Asterisk => {
                 while !op_stack.is_empty()
-                    && op_stack.last().unwrap() != &&Asterisk
+                    // Wikipedia says (the operator at the top of the operator stack has greater
+                    // precedence) or (the operator at the top of the operator stack has equal
+                    // precedence and the token is left associative), but ALL of our operators are
+                    // left-associative.  So just summarize into >=.
+                    && precedence.get(*op_stack.last().unwrap()).unwrap_or(&0)
+                        >= precedence.get(t).unwrap_or(&0)
                     && op_stack.last().unwrap() != &&LeftParen
                 {
                     rpn_queue.push(op_stack.pop().unwrap());
                 }
-                op_stack.push(&Plus);
-            }
-            Asterisk => {
-                while !op_stack.is_empty() && op_stack.last().unwrap() != &&LeftParen {
-                    rpn_queue.push(op_stack.pop().unwrap());
-                }
-                op_stack.push(&Asterisk);
+                op_stack.push(t);
             }
             LeftParen => op_stack.push(&LeftParen),
             RightParen => {
@@ -83,7 +88,7 @@ fn evaluate(tokens: &[Token]) -> i64 {
     }
 }
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, Hash, PartialEq)]
 enum Token {
     Integer(i64),
     Plus,
