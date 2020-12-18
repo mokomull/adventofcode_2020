@@ -11,8 +11,13 @@ fn do_main(filename: &str) {
         .map(|line| parse_line(&line))
         .collect();
 
+    let part1: i64 = input.iter().map(|line| evaluate(&line)).sum();
+    dbg!(part1);
+    assert_eq!(part1, 701339185745);
+
     let part2: i64 = input.iter().map(|line| evaluate(&line)).sum();
     dbg!(part2);
+    assert_eq!(part2, 4208490449905);
 }
 
 fn evaluate(tokens: &[Token]) -> i64 {
@@ -99,4 +104,12 @@ fn parse_line(input: &str) -> Vec<Token> {
             x => Integer(x.parse().expect("not an integer")),
         })
         .collect()
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_18.txt");
+    }
 }
