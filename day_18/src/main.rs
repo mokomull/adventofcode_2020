@@ -11,8 +11,8 @@ fn do_main(filename: &str) {
         .map(|line| parse_line(&line))
         .collect();
 
-    let part1: i64 = input.iter().map(|line| evaluate(&line)).sum();
-    dbg!(part1);
+    let part2: i64 = input.iter().map(|line| evaluate(&line)).sum();
+    dbg!(part2);
 }
 
 fn evaluate(tokens: &[Token]) -> i64 {
@@ -22,11 +22,20 @@ fn evaluate(tokens: &[Token]) -> i64 {
     for token in tokens {
         match token {
             t @ Integer(_) => rpn_queue.push(t),
-            t @ Plus | t @ Asterisk => {
+            Plus => {
+                while !op_stack.is_empty()
+                    && op_stack.last().unwrap() != &&Asterisk
+                    && op_stack.last().unwrap() != &&LeftParen
+                {
+                    rpn_queue.push(op_stack.pop().unwrap());
+                }
+                op_stack.push(&Plus);
+            }
+            Asterisk => {
                 while !op_stack.is_empty() && op_stack.last().unwrap() != &&LeftParen {
                     rpn_queue.push(op_stack.pop().unwrap());
                 }
-                op_stack.push(t);
+                op_stack.push(&Asterisk);
             }
             LeftParen => op_stack.push(&LeftParen),
             RightParen => {
