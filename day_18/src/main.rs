@@ -37,7 +37,11 @@ fn evaluate(tokens: &[Token]) -> i32 {
             }
         }
     }
-    assert!(op_stack.is_empty());
+    while !op_stack.is_empty() {
+        let x = op_stack.pop().unwrap();
+        assert_ne!(x, &LeftParen);
+        rpn_queue.push(x);
+    }
 
     let mut stack: Vec<i32> = Vec::new();
 
