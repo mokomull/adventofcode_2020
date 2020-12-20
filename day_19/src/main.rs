@@ -103,7 +103,15 @@ fn match_length(rule: &Rule, rules: &HashMap<usize, Rule>, input: &[u8]) -> Opti
             Some(starting)
         }
         Alt(left, right) => {
-            match_length(left, rules, input).or_else(|| match_length(right, rules, input))
+            // with rule 8: 42 | 42 8, we need to get greedy and continue matching as many 42s as we
+            // can.
+            let l = match_length(left, rules, input);
+            let r = match_length(right, rules, input);
+
+            match (l, r) {
+                (Some(l), Some(r)) => Some(l.max(r)),
+                _ => l.or(r),
+            }
         }
     }
 }
