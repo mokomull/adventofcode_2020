@@ -15,6 +15,19 @@ fn do_main(filename: &str) {
         .filter(|&message| match_length(rule0, &rules, message) == Some(message.len()))
         .count();
     dbg!(part1);
+
+    let mut rules = rules;
+    rules.insert(8, Alt(Seq(vec![42]).into(), Seq(vec![42, 8]).into()));
+    rules.insert(
+        11,
+        Alt(Seq(vec![42, 31]).into(), Seq(vec![42, 11, 31]).into()),
+    );
+    let rule0 = rules.get(&0).unwrap();
+    let part2 = messages
+        .iter()
+        .filter(|&message| match_length(rule0, &rules, message) == Some(message.len()))
+        .count();
+    dbg!(part2);
 }
 
 #[derive(Debug)]
