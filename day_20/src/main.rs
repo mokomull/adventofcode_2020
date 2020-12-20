@@ -6,6 +6,26 @@ fn main() {
 
 fn do_main(filename: &str) {
     let tiles = parse_tiles(read_lines_from_file(filename));
+
+    let mut edge_counts = HashMap::<usize, usize>::new();
+    for (t1, t2) in tiles.iter().tuple_combinations() {
+        for (e1, e2) in [t1.left(), t1.right(), t1.top(), t1.bottom()]
+            .iter()
+            .zip([t2.left(), t2.right(), t2.top(), t2.bottom()].iter())
+        {
+            if e1 == e2 {
+                *edge_counts.entry(t1.id).or_default() += 1;
+                *edge_counts.entry(t2.id).or_default() += 1;
+            }
+            let mut e2 = e2.clone();
+            e2.reverse();
+            if e1 == &e2 {
+                *edge_counts.entry(t1.id).or_default() += 1;
+                *edge_counts.entry(t2.id).or_default() += 1;
+            }
+        }
+    }
+    dbg!(edge_counts);
 }
 
 #[derive(Debug)]
@@ -51,9 +71,13 @@ impl Tile {
     fn left(&self) -> Vec<bool> {
         self.image.iter().map(|row| row[0]).collect()
     }
-    
+
     fn right(&self) -> Vec<bool> {
-        self.image.iter().map(|row| row.last().unwrap()).cloned().collect()
+        self.image
+            .iter()
+            .map(|row| row.last().unwrap())
+            .cloned()
+            .collect()
     }
 
     fn bottom(&self) -> Vec<bool> {
