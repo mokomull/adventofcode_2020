@@ -8,6 +8,13 @@ fn main() {
 
 fn do_main(filename: &str) {
     let (rules, messages) = parse_lines(&mut read_lines_from_file(filename));
+
+    let rule0 = rules.get(&0).expect("rule 0 was not defined");
+    let part1 = messages
+        .iter()
+        .filter(|&message| match_length(rule0, &rules, message) == Some(message.len()))
+        .count();
+    dbg!(part1);
 }
 
 #[derive(Debug)]
@@ -19,7 +26,7 @@ enum Rule {
 
 fn parse_lines(
     mut input: &mut impl Iterator<Item = String>,
-) -> (HashMap<usize, Rule>, Vec<String>) {
+) -> (HashMap<usize, Rule>, Vec<Vec<u8>>) {
     let mut rules = HashMap::new();
     for line in &mut input {
         if line.is_empty() {
@@ -34,7 +41,7 @@ fn parse_lines(
         rules.insert(id, parse_rule(&halves.next().expect("missing rule body")));
     }
 
-    let messages = input.collect();
+    let messages = input.map(|s| s.into_bytes()).collect();
     (rules, messages)
 }
 
@@ -55,4 +62,35 @@ fn parse_rule(input: &str) -> Rule {
         .split_whitespace()
         .map(|word| word.parse().expect("not an integer"))
         .collect())
+}
+
+fn match_length(rule: &Rule, rules: &HashMap<usize, Rule>, input: &[u8]) -> Option<usize> {
+    match rule {
+        Char(c) => {
+            if input.get(0) == Some(c) {
+                Some(1)
+            } else {
+                None
+            }
+        }
+        Seq(sequence) => {
+            let mut starting = 0;
+            for i in sequence {
+                if let Some(l) = match_length(
+                    rules.get(i).expect("nonexistent rule"),
+                    rules,
+                    &input[starting..],
+                ) {
+                    starting += l;
+                } else {
+                    // at least one of the sequence elements did not match
+                    return None;
+                }
+            }
+            Some(starting)
+        }
+        Alt(left, right) => {
+            match_length(left, rules, input).or_else(|| match_length(right, rules, input))
+        }
+    }
 }
