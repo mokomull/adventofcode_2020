@@ -9,7 +9,7 @@ fn main() {
 fn do_main(filename: &str) {
     let tiles = parse_tiles(read_lines_from_file(filename));
 
-    let mut edge_counts = HashMap::<(usize, Edge), usize>::new();
+    let mut edge_matches = HashSet::<(usize, Edge, usize, Edge)>::new();
     for (t1, t2) in tiles.iter().tuple_combinations() {
         for (e1, e2) in [
             (Left, t1.left()),
@@ -18,7 +18,7 @@ fn do_main(filename: &str) {
             (Bottom, t1.bottom()),
         ]
         .iter()
-        .zip(
+        .cartesian_product(
             [
                 (Left, t2.left()),
                 (Right, t2.right()),
@@ -28,18 +28,16 @@ fn do_main(filename: &str) {
             .iter(),
         ) {
             if e1.1 == e2.1 {
-                *edge_counts.entry((t1.id, e1.0)).or_default() += 1;
-                *edge_counts.entry((t2.id, e2.0)).or_default() += 1;
+                edge_matches.insert((t1.id, e1.0, t2.id, e2.0));
             }
             let mut reversed = e2.1.clone();
             reversed.reverse();
             if e1.1 == reversed {
-                *edge_counts.entry((t1.id, e1.0)).or_default() += 1;
-                *edge_counts.entry((t2.id, e2.0)).or_default() += 1;
+                edge_matches.insert((t1.id, e1.0, t2.id, e2.0));
             }
         }
     }
-    dbg!(edge_counts.len());
+    dbg!(edge_matches.len());
 }
 
 #[derive(Debug)]
