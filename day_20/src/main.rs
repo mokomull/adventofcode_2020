@@ -8,6 +8,7 @@ fn do_main(filename: &str) {
     let tiles = parse_tiles(read_lines_from_file(filename));
 }
 
+#[derive(Debug)]
 struct Tile {
     id: usize,
     image: Vec<Vec<bool>>,
@@ -29,6 +30,7 @@ where
             });
             id = None;
             rows = Vec::new();
+            continue;
         }
 
         if line.starts_with("Tile ") {
