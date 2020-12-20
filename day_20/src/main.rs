@@ -7,7 +7,7 @@ fn main() {
 }
 
 fn do_main(filename: &str) {
-    let tiles = parse_tiles(read_lines_from_file(filename).chain(std::iter::once("".into())));
+    let tiles = parse_tiles(read_lines_from_file(filename));
 
     let mut edge_matches = HashSet::<(usize, Edge, usize, Edge)>::new();
     for (t1, t2) in tiles.iter().tuple_combinations() {
