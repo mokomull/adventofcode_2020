@@ -35,6 +35,7 @@ fn do_main(filename: &str) {
         })
         .count();
     dbg!(part1);
+    assert_eq!(part1, 2410);
 
     let mut unknown = allergen_to_ingredient;
     let mut known = Vec::new();
@@ -63,7 +64,8 @@ fn do_main(filename: &str) {
         .iter()
         .map(|(_allergen, ingredient)| ingredient)
         .join(",");
-    dbg!(part2);
+    dbg!(&part2);
+    assert_eq!(&part2, "tmp,pdpgm,cdslv,zrvtg,ttkn,mkpmkx,vxzpfp,flnhl");
 }
 
 #[derive(Debug)]
@@ -88,5 +90,13 @@ impl From<&str> for Food {
             ingredients: left.split_whitespace().map(|i| i.to_owned()).collect(),
             allergens: right.split(", ").map(|i| i.to_owned()).collect(),
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_21.txt");
     }
 }
