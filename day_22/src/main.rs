@@ -1,5 +1,7 @@
 use prelude::*;
 
+use tracing::{info, info_span};
+
 use std::collections::VecDeque;
 
 fn main() {
@@ -35,6 +37,8 @@ fn do_main(filename: &str) {
         .sum();
     dbg!(part1);
 
+    tracing_subscriber::fmt::init();
+
     let decks = orig_decks.clone();
     let mut seen = HashSet::new();
     let decks = recursive_combat(decks, &mut seen);
@@ -53,6 +57,9 @@ fn recursive_combat(
     seen: &mut HashSet<Vec<VecDeque<u32>>>,
 ) -> Vec<VecDeque<u32>> {
     while decks.iter().all(|d| !d.is_empty()) {
+        let span = info_span!("recursive_combat", "{:?}", decks);
+        let _enter = span.enter();
+
         let has_been_seen = !seen.insert(decks.clone());
 
         let round: Vec<u32> = decks
@@ -87,6 +94,8 @@ fn recursive_combat(
                 round.iter().position_max().unwrap()
             }
         };
+
+        info!("winner: {}", winner);
 
         let loser = match winner {
             0 => 1,
