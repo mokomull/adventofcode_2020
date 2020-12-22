@@ -15,6 +15,7 @@ fn do_main(filename: &str) {
         .filter(|&message| match_length(rule0, &rules, message).contains(&message.len()))
         .count();
     dbg!(part1);
+    assert_eq!(part1, 129);
 
     let mut rules = rules;
     rules.insert(8, Alt(Seq(vec![42]).into(), Seq(vec![42, 8]).into()));
@@ -28,6 +29,7 @@ fn do_main(filename: &str) {
         .filter(|&message| match_length(rule0, &rules, message).contains(&message.len()))
         .count();
     dbg!(part2);
+    assert_eq!(part2, 243);
 }
 
 #[derive(Debug)]
@@ -113,5 +115,13 @@ fn match_length(rule: &Rule, rules: &HashMap<usize, Rule>, input: &[u8]) -> Hash
 
             l.union(&r).cloned().collect()
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_19.txt");
     }
 }
