@@ -40,8 +40,7 @@ fn do_main(filename: &str) {
     tracing_subscriber::fmt::init();
 
     let decks = orig_decks.clone();
-    let mut seen = HashSet::new();
-    let decks = recursive_combat(decks, &mut seen);
+    let decks = recursive_combat(decks);
 
     let part2: u32 = decks
         .iter()
@@ -52,10 +51,9 @@ fn do_main(filename: &str) {
     dbg!(part2);
 }
 
-fn recursive_combat(
-    mut decks: Vec<VecDeque<u32>>,
-    seen: &mut HashSet<Vec<VecDeque<u32>>>,
-) -> Vec<VecDeque<u32>> {
+fn recursive_combat(mut decks: Vec<VecDeque<u32>>) -> Vec<VecDeque<u32>> {
+    let mut seen = HashSet::new();
+
     while decks.iter().all(|d| !d.is_empty()) {
         let span = info_span!("recursive_combat", "{:?}", decks);
         let _enter = span.enter();
@@ -68,6 +66,7 @@ fn recursive_combat(
             .collect();
 
         let winner = if has_been_seen {
+            info!("I've seen this before");
             0
         } else {
             let should_recurse = decks
@@ -81,7 +80,7 @@ fn recursive_combat(
                     .zip(&round)
                     .map(|(deck, count)| deck.iter().take(*count as usize).cloned().collect())
                     .collect();
-                let recursive_result = recursive_combat(new_decks, seen);
+                let recursive_result = recursive_combat(new_decks);
                 assert!(recursive_result.iter().any(|d| d.is_empty()));
                 recursive_result
                     .iter()
