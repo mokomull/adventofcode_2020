@@ -88,6 +88,7 @@ fn match_length(rule: &Rule, rules: &HashMap<usize, Rule>, input: &[u8]) -> Hash
         }
         Seq(sequence) => {
             let mut starting = HashSet::new();
+            starting.insert(0);
             for i in sequence {
                 starting = starting
                     .iter()
