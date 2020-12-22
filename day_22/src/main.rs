@@ -36,6 +36,7 @@ fn do_main(filename: &str) {
         .map(|(card, i)| *card * i)
         .sum();
     dbg!(part1);
+    assert_eq!(part1, 32629);
 
     tracing_subscriber::fmt::init();
 
@@ -49,6 +50,7 @@ fn do_main(filename: &str) {
         .map(|(card, i)| *card * i)
         .sum();
     dbg!(part2);
+    assert_eq!(part2, 32519);
 }
 
 fn recursive_combat(mut decks: Vec<VecDeque<u32>>) -> Vec<VecDeque<u32>> {
@@ -131,4 +133,12 @@ where
     }
 
     ret
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_22.txt");
+    }
 }
