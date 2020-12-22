@@ -35,6 +35,35 @@ fn do_main(filename: &str) {
         })
         .count();
     dbg!(part1);
+
+    let mut unknown = allergen_to_ingredient;
+    let mut known = Vec::new();
+    while !unknown.is_empty() {
+        let now_known = unknown
+            .iter()
+            .filter(|&(_k, v)| v.len() == 1)
+            .next()
+            .unwrap()
+            .0
+            .clone();
+        let ingredient = unknown
+            .remove(&now_known)
+            .unwrap()
+            .iter()
+            .next()
+            .unwrap()
+            .clone();
+        for ingredients in unknown.values_mut() {
+            ingredients.remove(&ingredient);
+        }
+        known.push((now_known, ingredient));
+    }
+    known.sort();
+    let part2 = known
+        .iter()
+        .map(|(_allergen, ingredient)| ingredient)
+        .join(",");
+    dbg!(part2);
 }
 
 #[derive(Debug)]
