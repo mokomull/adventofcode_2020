@@ -9,21 +9,30 @@ fn do_main(filename: &str) {
         .map(|line| line.as_str().into())
         .collect();
 
-    let mut possible_allergens: HashMap<String, HashSet<String>> = HashMap::new();
+    let mut allergen_to_ingredient: HashMap<String, HashSet<String>> = HashMap::new();
     for food in &foods {
-        for ingredient in &food.ingredients {
-            let allergens = food.allergens.iter().cloned().collect::<HashSet<String>>();
-            if let Some(set) = possible_allergens.get_mut(ingredient) {
-                *set = set.intersection(&allergens).cloned().collect()
+        for allergen in &food.allergens {
+            let ingredients = food
+                .ingredients
+                .iter()
+                .cloned()
+                .collect::<HashSet<String>>();
+            if let Some(set) = allergen_to_ingredient.get_mut(allergen) {
+                *set = set.intersection(&ingredients).cloned().collect()
             } else {
-                possible_allergens.insert(ingredient.clone(), allergens);
+                allergen_to_ingredient.insert(allergen.clone(), ingredients);
             }
         }
     }
+    dbg!(&allergen_to_ingredient);
     let part1 = foods
         .iter()
         .flat_map(|food| food.ingredients.iter())
-        .filter(|&ingredient| possible_allergens[ingredient].is_empty())
+        .filter(|&ingredient| {
+            allergen_to_ingredient
+                .values()
+                .all(|ingredients| !ingredients.contains(ingredient))
+        })
         .count();
     dbg!(part1);
 }
