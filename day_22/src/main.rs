@@ -35,11 +35,9 @@ fn do_main(filename: &str) {
         .sum();
     dbg!(part1);
 
-    let mut decks = orig_decks.clone();
+    let decks = orig_decks.clone();
     let mut seen = HashSet::new();
-    while decks.iter().all(|deck| !deck.is_empty()) {
-        recursive_combat(&mut decks, &mut seen);
-    }
+    let decks = recursive_combat(decks, &mut seen);
 
     let part2: u32 = decks
         .iter()
@@ -51,44 +49,56 @@ fn do_main(filename: &str) {
 }
 
 fn recursive_combat(
-    decks: &mut Vec<VecDeque<u32>>,
+    mut decks: Vec<VecDeque<u32>>,
     seen: &mut HashSet<Vec<VecDeque<u32>>>,
-) -> usize {
-    if seen.contains(decks) {
-        return 0;
+) -> Vec<VecDeque<u32>> {
+    while decks.iter().all(|d| !d.is_empty()) {
+        let has_been_seen = !seen.insert(decks.clone());
+
+        let round: Vec<u32> = decks
+            .iter_mut()
+            .map(|deck| deck.pop_front().unwrap())
+            .collect();
+
+        let winner = if has_been_seen {
+            0
+        } else {
+            let should_recurse = decks
+                .iter()
+                .zip(round.iter())
+                .all(|(deck, count)| deck.len() >= *count as usize);
+
+            if should_recurse {
+                let new_decks = decks
+                    .iter()
+                    .zip(&round)
+                    .map(|(deck, count)| deck.iter().take(*count as usize).cloned().collect())
+                    .collect();
+                let recursive_result = recursive_combat(new_decks, seen);
+                assert!(recursive_result.iter().any(|d| d.is_empty()));
+                recursive_result
+                    .iter()
+                    .enumerate()
+                    .filter(|&(_i, d)| !d.is_empty())
+                    .map(|(i, _d)| i)
+                    .next()
+                    .unwrap()
+            } else {
+                round.iter().position_max().unwrap()
+            }
+        };
+
+        let loser = match winner {
+            0 => 1,
+            1 => 0,
+            x => panic!("who's player {}", x),
+        };
+
+        decks[winner].push_back(round[winner]);
+        decks[winner].push_back(round[loser]);
     }
 
-    let round: Vec<u32> = decks
-        .iter_mut()
-        .map(|deck| deck.pop_front().unwrap())
-        .collect();
-
-    let should_recurse = decks
-        .iter()
-        .zip(round.iter())
-        .all(|(deck, count)| deck.len() >= *count as usize);
-
-    let winner = if should_recurse {
-        let mut new_decks = decks
-            .iter()
-            .zip(&round)
-            .map(|(deck, count)| deck.iter().take(*count as usize).cloned().collect())
-            .collect();
-        recursive_combat(&mut new_decks, seen)
-    } else {
-        round.iter().position_max().unwrap()
-    };
-
-    let loser = match winner {
-        0 => 1,
-        1 => 0,
-        x => panic!("who's player {}", x),
-    };
-
-    decks[winner].push_back(round[winner]);
-    decks[winner].push_back(round[loser]);
-
-    winner
+    decks
 }
 
 fn parse_lines<I>(input: I) -> Vec<VecDeque<u32>>
