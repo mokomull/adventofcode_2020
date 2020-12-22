@@ -12,7 +12,7 @@ fn do_main(filename: &str) {
     let rule0 = rules.get(&0).expect("rule 0 was not defined");
     let part1 = messages
         .iter()
-        .filter(|&message| match_length(rule0, &rules, message) == Some(message.len()))
+        .filter(|&message| match_length(rule0, &rules, message).contains(&message.len()))
         .count();
     dbg!(part1);
 
@@ -25,7 +25,7 @@ fn do_main(filename: &str) {
     let rule0 = rules.get(&0).unwrap();
     let part2 = messages
         .iter()
-        .filter(|&message| match_length(rule0, &rules, message) == Some(message.len()))
+        .filter(|&message| match_length(rule0, &rules, message).contains(&message.len()))
         .count();
     dbg!(part2);
 }
@@ -77,30 +77,32 @@ fn parse_rule(input: &str) -> Rule {
         .collect())
 }
 
-fn match_length(rule: &Rule, rules: &HashMap<usize, Rule>, input: &[u8]) -> Option<usize> {
+fn match_length(rule: &Rule, rules: &HashMap<usize, Rule>, input: &[u8]) -> HashSet<usize> {
     match rule {
         Char(c) => {
             if input.get(0) == Some(c) {
-                Some(1)
+                vec![1].drain(..).collect()
             } else {
-                None
+                HashSet::new()
             }
         }
         Seq(sequence) => {
-            let mut starting = 0;
+            let mut starting = HashSet::new();
             for i in sequence {
-                if let Some(l) = match_length(
-                    rules.get(i).expect("nonexistent rule"),
-                    rules,
-                    &input[starting..],
-                ) {
-                    starting += l;
-                } else {
-                    // at least one of the sequence elements did not match
-                    return None;
-                }
+                starting = starting
+                    .iter()
+                    .flat_map(|so_far| {
+                        match_length(
+                            rules.get(i).expect("nonexistent rule"),
+                            rules,
+                            &input[*so_far..],
+                        )
+                        .into_iter()
+                        .map(move |length| *so_far + length)
+                    })
+                    .collect();
             }
-            Some(starting)
+            starting
         }
         Alt(left, right) => {
             // with rule 8: 42 | 42 8, we need to get greedy and continue matching as many 42s as we
@@ -108,10 +110,7 @@ fn match_length(rule: &Rule, rules: &HashMap<usize, Rule>, input: &[u8]) -> Opti
             let l = match_length(left, rules, input);
             let r = match_length(right, rules, input);
 
-            match (l, r) {
-                (Some(l), Some(r)) => Some(l.max(r)),
-                _ => l.or(r),
-            }
+            l.union(&r).cloned().collect()
         }
     }
 }
