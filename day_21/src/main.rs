@@ -8,7 +8,17 @@ fn do_main(filename: &str) {
     let foods: Vec<Food> = read_lines_from_file(filename)
         .map(|line| line.as_str().into())
         .collect();
-    dbg!(foods);
+
+    let mut possible_allergens: HashMap<String, HashSet<String>> = HashMap::new();
+    for food in foods {
+        for ingredient in &food.ingredients {
+            let set = possible_allergens.entry(ingredient.clone()).or_default();
+
+            for allergen in &food.allergens {
+                set.insert(allergen.clone());
+            }
+        }
+    }
 }
 
 #[derive(Debug)]
