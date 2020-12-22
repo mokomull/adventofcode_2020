@@ -10,15 +10,22 @@ fn do_main(filename: &str) {
         .collect();
 
     let mut possible_allergens: HashMap<String, HashSet<String>> = HashMap::new();
-    for food in foods {
+    for food in &foods {
         for ingredient in &food.ingredients {
-            let set = possible_allergens.entry(ingredient.clone()).or_default();
-
-            for allergen in &food.allergens {
-                set.insert(allergen.clone());
+            let allergens = food.allergens.iter().cloned().collect::<HashSet<String>>();
+            if let Some(set) = possible_allergens.get_mut(ingredient) {
+                *set = set.intersection(&allergens).cloned().collect()
+            } else {
+                possible_allergens.insert(ingredient.clone(), allergens);
             }
         }
     }
+    let part1 = foods
+        .iter()
+        .flat_map(|food| food.ingredients.iter())
+        .filter(|&ingredient| possible_allergens[ingredient].is_empty())
+        .count();
+    dbg!(part1);
 }
 
 #[derive(Debug)]
