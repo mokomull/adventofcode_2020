@@ -5,23 +5,16 @@ fn main() {
 
     dbg!(&cups);
     assert_eq!(&cups, &[8, 2, 5, 7, 3, 4, 9, 6]);
-    return;
 
-    #[cfg(junk)]
-    {
-        let mut cups: VecDeque<i32> = input.iter().cloned().collect();
-        for i in 10..=1_000_000 {
-            cups.push_back(i);
-        }
-        run(10_000_000, &mut cups);
-
-        while *cups.back().unwrap() != 1 {
-            let cup = cups.pop_front().unwrap();
-            cups.push_back(cup);
-        }
-        let part2: i64 = cups.drain(..2).map(|i| i as i64).product();
-        dbg!(part2);
+    let mut part2_input: Vec<usize> = input.iter().cloned().collect();
+    for i in 10..=1_000_000 {
+        part2_input.push(i);
     }
+    let part2: u64 = run(10_000_000, &part2_input)
+        .drain(..2)
+        .map(|i| i as u64)
+        .product();
+    dbg!(part2);
 }
 
 #[derive(Clone, Default, Debug)]
