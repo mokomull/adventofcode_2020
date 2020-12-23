@@ -11,8 +11,10 @@ fn main() {
 
 fn run(iterations: i32, cups: &mut VecDeque<i32>) {
     let mut current_cup = *cups.front().unwrap();
+    let min = *cups.iter().min().unwrap();
+    let max = *cups.iter().max().unwrap();
 
-    for i in 0..iterations {
+    for _ in 0..iterations {
         // get the next three cups after the current cup
         while *cups.back().unwrap() != current_cup {
             let cup = cups.pop_front().unwrap();
@@ -21,13 +23,13 @@ fn run(iterations: i32, cups: &mut VecDeque<i32>) {
 
         let this_round: Vec<_> = cups.drain(..3).collect();
         let mut destination = current_cup - 1;
-        if destination < 1 {
-            destination = 9;
+        if destination < min {
+            destination = max;
         }
         while this_round.contains(&destination) {
             destination -= 1;
-            if destination < 1 {
-                destination = 9;
+            if destination < min {
+                destination = max;
             }
         }
 
