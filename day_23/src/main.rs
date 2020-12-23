@@ -6,7 +6,8 @@ fn main() {
     let mut cups: VecDeque<i32> = input.iter().cloned().collect();
     run(100, &mut cups);
 
-    dbg!(cups);
+    dbg!(&cups);
+    assert_eq!(&cups, &[7, 3, 4, 9, 6, 1, 8, 2, 5]);
 
     let mut cups: VecDeque<i32> = input.iter().cloned().collect();
     for i in 10..=1_000_000 {
