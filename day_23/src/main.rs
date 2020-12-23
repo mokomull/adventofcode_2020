@@ -7,6 +7,19 @@ fn main() {
     run(100, &mut cups);
 
     dbg!(cups);
+
+    let mut cups: VecDeque<i32> = input.iter().cloned().collect();
+    for i in 10..=1_000_000 {
+        cups.push_back(i);
+    }
+    run(10_000_000, &mut cups);
+
+    while *cups.back().unwrap() != 1 {
+        let cup = cups.pop_front().unwrap();
+        cups.push_back(cup);
+    }
+    let part2: i64 = cups.drain(..2).map(|i| i as i64).product();
+    dbg!(part2);
 }
 
 fn run(iterations: i32, cups: &mut VecDeque<i32>) {
@@ -14,7 +27,8 @@ fn run(iterations: i32, cups: &mut VecDeque<i32>) {
     let min = *cups.iter().min().unwrap();
     let max = *cups.iter().max().unwrap();
 
-    for _ in 0..iterations {
+    for i in 0..iterations {
+        dbg!(i);
         // get the next three cups after the current cup
         while *cups.back().unwrap() != current_cup {
             let cup = cups.pop_front().unwrap();
