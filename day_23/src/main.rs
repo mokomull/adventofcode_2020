@@ -4,10 +4,15 @@ fn main() {
     let input = [1, 5, 6, 7, 9, 4, 8, 2, 3];
 
     let mut cups: VecDeque<i32> = input.iter().cloned().collect();
+    run(100, &mut cups);
+
+    dbg!(cups);
+}
+
+fn run(iterations: i32, cups: &mut VecDeque<i32>) {
     let mut current_cup = *cups.front().unwrap();
 
-    for i in 0..100 {
-        dbg!(i);
+    for i in 0..iterations {
         // get the next three cups after the current cup
         while *cups.back().unwrap() != current_cup {
             let cup = cups.pop_front().unwrap();
@@ -44,6 +49,4 @@ fn main() {
 
         current_cup = *cups.front().unwrap();
     }
-
-    dbg!(cups);
 }
