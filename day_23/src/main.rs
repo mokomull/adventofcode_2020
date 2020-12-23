@@ -15,6 +15,7 @@ fn main() {
         .map(|i| i as u64)
         .product();
     dbg!(part2);
+    assert_eq!(part2, 11498506800);
 }
 
 #[derive(Clone, Default, Debug)]
@@ -85,4 +86,12 @@ fn run(iterations: i32, input: &[usize]) -> Vec<usize> {
         this = cups[this].next;
     }
     ret
+}
+
+#[cfg(test)]
+mod test {
+    #[test]
+    fn main() {
+        super::main();
+    }
 }
