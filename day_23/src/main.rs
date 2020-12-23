@@ -2,7 +2,6 @@ use std::collections::VecDeque;
 
 fn main() {
     let input = [1, 5, 6, 7, 9, 4, 8, 2, 3];
-    let input = [3, 8, 9, 1, 2, 5, 4, 6, 7];
 
     let mut cups: VecDeque<i32> = input.iter().cloned().collect();
     let mut current_cup = *cups.front().unwrap();
@@ -17,6 +16,9 @@ fn main() {
 
         let this_round: Vec<_> = cups.drain(..3).collect();
         let mut destination = current_cup - 1;
+        if destination < 1 {
+            destination = 9;
+        }
         while this_round.contains(&destination) {
             destination -= 1;
             if destination < 1 {
