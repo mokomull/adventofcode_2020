@@ -6,7 +6,7 @@ fn main() {
     dbg!(&cups);
     assert_eq!(&cups, &[8, 2, 5, 7, 3, 4, 9, 6]);
 
-    let mut part2_input: Vec<usize> = input.iter().cloned().collect();
+    let mut part2_input = input.to_vec();
     for i in 10..=1_000_000 {
         part2_input.push(i);
     }
