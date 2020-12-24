@@ -56,12 +56,13 @@ fn step_life(black_up: &mut HashSet<(i32, i32)>) {
     let mut new_black_up = black_up.clone();
     for x in (min_x - 1)..=(max_x + 1) {
         for y in (min_y - 1)..=(max_y + 1) {
+            let neighbors = black_neighbors((x, y), black_up);
             if black_up.contains(&(x, y)) {
-                if black_neighbors((x, y), black_up) > 2 {
+                if neighbors == 0 || neighbors > 2 {
                     new_black_up.remove(&(x, y));
                 }
             } else {
-                if black_neighbors((x, y), black_up) == 2 {
+                if neighbors == 2 {
                     new_black_up.insert((x, y));
                 }
             }
