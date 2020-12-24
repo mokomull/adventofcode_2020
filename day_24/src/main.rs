@@ -10,6 +10,37 @@ fn do_main(filename: &str) {
     let input: Vec<Vec<Direction>> = read_lines_from_file(filename)
         .map(|line| parse_line(line.as_bytes()))
         .collect();
+
+    let mut black_up = HashSet::new();
+    for line in input {
+        let coord = line
+            .iter()
+            .fold((0, 0), |coord, direction| hex_move(direction, coord));
+        if black_up.contains(&coord) {
+            black_up.remove(&coord);
+        } else {
+            black_up.insert(coord);
+        }
+    }
+    let part1 = black_up.len();
+    dbg!(part1);
+}
+
+fn hex_move(direction: &Direction, coord: (i32, i32)) -> (i32, i32) {
+    let northorsouth_east_x_coord = if coord.1 % 2 == 0 {
+        coord.0
+    } else {
+        coord.0 + 1
+    };
+
+    match direction {
+        East => (coord.0 + 1, coord.1),
+        West => (coord.0 - 1, coord.1),
+        Northeast => (northorsouth_east_x_coord, coord.1 + 1),
+        Northwest => (northorsouth_east_x_coord - 1, coord.1 + 1),
+        Southeast => (northorsouth_east_x_coord, coord.1 - 1),
+        Southwest => (northorsouth_east_x_coord - 1, coord.1 - 1),
+    }
 }
 
 #[derive(Debug, Eq, PartialEq)]
