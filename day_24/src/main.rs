@@ -152,4 +152,16 @@ mod test {
             ]
         )
     }
+
+    #[test]
+    fn black_neighbors() {
+        let black_up: HashSet<(i32, i32)> =
+            [(0, 0), (1, 1), (0, 2), (1, 3)].iter().cloned().collect();
+        assert_eq!(super::black_neighbors((0, 1), &black_up), 3);
+        assert_eq!(super::black_neighbors((1, 2), &black_up), 3);
+        assert_eq!(super::black_neighbors((-1, 1), &black_up), 2);
+        assert_eq!(super::black_neighbors((-2, 1), &black_up), 0);
+        assert_eq!(super::black_neighbors((0, 3), &black_up), 2);
+        assert_eq!(super::black_neighbors((-1, 2), &black_up), 1);
+    }
 }
