@@ -32,6 +32,14 @@ fn do_main(filename: &str) {
     dbg!(part2);
 }
 
+// This implements a hexagonal coordinate system, with x on the horizontal, and y on the vertical,
+// where the odd rows are shifted eastward a smidge:
+//    -1,  2        0,  2       1,  2       2,  2
+//           -1,  1       0,  1       1,  1       2, 1
+//    -1,  0        0,  0       1,  0       2,  0
+//           -1, -1       0, -1       1, -1
+//    -1, -2        0, -2       1, -2       2, -2
+
 fn hex_move(direction: &Direction, coord: (i32, i32)) -> (i32, i32) {
     let northorsouth_east_x_coord = if coord.1 % 2 == 0 {
         coord.0
