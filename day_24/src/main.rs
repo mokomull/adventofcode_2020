@@ -24,12 +24,14 @@ fn do_main(filename: &str) {
     }
     let part1 = black_up.len();
     dbg!(part1);
+    assert_eq!(part1, 523);
 
     for _ in 0..100 {
         step_life(&mut black_up);
     }
     let part2 = black_up.len();
     dbg!(part2);
+    assert_eq!(part2, 4225);
 }
 
 // This implements a hexagonal coordinate system, with x on the horizontal, and y on the vertical,
@@ -172,5 +174,10 @@ mod test {
         assert_eq!(super::black_neighbors((-2, 1), &black_up), 0);
         assert_eq!(super::black_neighbors((0, 3), &black_up), 2);
         assert_eq!(super::black_neighbors((-1, 2), &black_up), 1);
+    }
+
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_24.txt");
     }
 }
