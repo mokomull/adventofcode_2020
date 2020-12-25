@@ -87,9 +87,44 @@ fn do_main(filename: &str) {
         };
         edge_matches[&(next_tile, bottom_edge)]
     };
+
+    let mut reconstructed_image = vec![vec![]; by_id[&next_tile].image.len() - 2];
+    loop {
+        // copy this tile to the image (excluding its borders)
+        let mut tile = by_id[&next_tile].clone();
+        let rotations = match edge {
+            Left => 0,
+            Top => 3,
+            Right => 2,
+            Bottom => 1,
+        };
+        for _ in 0..rotations {
+            tile.rotate_clockwise();
+        }
+        if flipped {
+            tile.flip_vertically();
+        }
+
+        let start_row = reconstructed_image.len() - (tile.image.len() - 2);
+        for (dest, src) in reconstructed_image
+            .iter_mut()
+            .skip(start_row)
+            .zip(tile.image.drain(1..))
+        {
+            for pixel in &src[1..src.len() - 1] {
+                dest.push(*pixel);
+            }
+        }
+
+        // figure out what the next tile to the right should be, and its orientation
+
+        // if that didn't work, start on the next row
+
+        // and if there isn't a next row, quit.
+    }
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct Tile {
     id: usize,
     image: Vec<Vec<bool>>,
