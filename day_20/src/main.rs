@@ -1,3 +1,5 @@
+use std::unimplemented;
+
 use prelude::*;
 
 use Edge::*;
@@ -162,6 +164,45 @@ fn do_main(filename: &str) {
         }
         println!();
     }
+
+    let sea_monster = "                  # 
+#    ##    ##    ###
+ #  #  #  #  #  #   "
+        .lines()
+        .enumerate()
+        .flat_map(|(i, line)| {
+            line.chars()
+                .enumerate()
+                .filter_map(move |(j, c)| if c == '#' { Some((i, j)) } else { None })
+        })
+        .collect_vec();
+
+    let mut reconstructed = Tile {
+        id: 0,
+        image: reconstructed_image,
+    };
+    let mut sea_monsters = 0;
+    for i in 0..8 {
+        if i == 4 {
+            reconstructed.flip_vertically();
+        }
+
+        for x in 0..reconstructed.image.len() {
+            for y in 0..reconstructed.image[0].len() {
+                if sea_monster.iter().all(|&(sx, sy)| {
+                    reconstructed
+                        .image
+                        .get(x + sx)
+                        .and_then(|row| row.get(y + sy))
+                        == Some(&true)
+                }) {
+                    eprintln!("Found a sea monster at {:?} on iteration {}", (x, y), i);
+                    sea_monsters += 1;
+                }
+            }
+        }
+    }
+    dbg!(sea_monsters);
 }
 
 fn compute_left_edge_from_top(edge: Edge, flipped: bool) -> Edge {
