@@ -79,12 +79,12 @@ fn do_main(filename: &str) {
 
     // id, "left" edge, and flipped-ness, to be used after we've finished copying a whole row
     let (mut next_row, mut next_row_edge, mut next_row_flipped) = {
-        let bottom_edge = compute_bottom_edge_from_left(edge);
+        let bottom_edge = compute_bottom_edge_from_left(edge, flipped);
         edge_matches[&(tile_id, bottom_edge)]
     };
     // this told us which edge of the next row was the TOP, but the invariant is that we iterate
     // from the LEFT edge.
-    next_row_edge = compute_left_edge_from_top(next_row_edge);
+    next_row_edge = compute_left_edge_from_top(next_row_edge, next_row_flipped);
     dbg!(next_row);
 
     let mut reconstructed_image = vec![vec![]; by_id[&tile_id].image.len() - 2];
@@ -131,13 +131,13 @@ fn do_main(filename: &str) {
             edge = next_row_edge;
             flipped = next_row_flipped;
 
-            let bottom_edge = compute_bottom_edge_from_left(edge);
+            let bottom_edge = compute_bottom_edge_from_left(edge, flipped);
             dbg!(bottom_edge);
             if let Some(next) = edge_matches.get(&(tile_id, bottom_edge)) {
                 dbg!(next);
                 next_row = next.0;
-                next_row_edge = compute_left_edge_from_top(next.1);
                 next_row_flipped ^= next.2;
+                next_row_edge = compute_left_edge_from_top(next.1, next_row_flipped);
             } else {
                 next_row = 0;
             }
@@ -164,19 +164,28 @@ fn do_main(filename: &str) {
     }
 }
 
-fn compute_left_edge_from_top(edge: Edge) -> Edge {
-    match edge {
-        Top => Left,
-        Left => Bottom,
-        Bottom => Right,
-        Right => Top,
+fn compute_left_edge_from_top(edge: Edge, flipped: bool) -> Edge {
+    if flipped {
+        match edge {
+            Top => Right,
+            Left => Top,
+            Bottom => Left,
+            Right => Bottom,
+        }
+    } else {
+        match edge {
+            Top => Left,
+            Left => Bottom,
+            Bottom => Right,
+            Right => Top,
+        }
     }
 }
 
-fn compute_bottom_edge_from_left(edge: Edge) -> Edge {
+fn compute_bottom_edge_from_left(edge: Edge, flipped: bool) -> Edge {
     // this is the same thing, but named more clearly -- top ~> left and left ~> bottom are both
     // exactly one counterclockwise movement.
-    compute_left_edge_from_top(edge)
+    compute_left_edge_from_top(edge, flipped)
 }
 
 fn compute_right_edge_from_left(edge: Edge) -> Edge {
