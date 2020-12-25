@@ -59,14 +59,14 @@ fn do_main(filename: &str) {
 
     // invariant: edge is always the edge of the input data that will end up on the LEFT-hand edge
     // of the next tile in the reconstructed image.
-    let mut next_tile = corner.unwrap();
+    let mut tile_id = corner.unwrap();
     let mut edge;
     let mut flipped = false;
 
     // figure out which edge of the corner tile we picked will be the "left"
     edge = match [Left, Top, Right, Bottom]
         .iter()
-        .filter(|&edge| edge_matches.contains_key(&(next_tile, *edge)))
+        .filter(|&edge| edge_matches.contains_key(&(tile_id, *edge)))
         .collect_vec()
         .as_slice()
     {
@@ -85,13 +85,13 @@ fn do_main(filename: &str) {
             Right => Top,
             Bottom => Right,
         };
-        edge_matches[&(next_tile, bottom_edge)]
+        edge_matches[&(tile_id, bottom_edge)]
     };
 
-    let mut reconstructed_image = vec![vec![]; by_id[&next_tile].image.len() - 2];
+    let mut reconstructed_image = vec![vec![]; by_id[&tile_id].image.len() - 2];
     loop {
         // copy this tile to the image (excluding its borders)
-        let mut tile = by_id[&next_tile].clone();
+        let mut tile = by_id[&tile_id].clone();
         let rotations = match edge {
             Left => 0,
             Top => 3,
@@ -117,10 +117,48 @@ fn do_main(filename: &str) {
         }
 
         // figure out what the next tile to the right should be, and its orientation
+        let right_edge = match edge {
+            Left => Right,
+            Top => Bottom,
+            Right => Left,
+            Bottom => Top,
+        };
+        if let Some(next) = edge_matches.get(&(tile_id, right_edge)) {
+            tile_id = next.0;
+            edge = next.1;
+            flipped ^= next.2;
+            continue;
+        }
 
         // if that didn't work, start on the next row
+        if next_row > 0 {
+            tile_id = next_row;
+            edge = next_row_edge;
+            flipped = next_row_flipped;
+
+            let bottom_edge = match edge {
+                Left => Bottom,
+                Top => Left, 
+                Right => Top,
+                Bottom => Right,
+            };
+            if let Some(next) = edge_matches.get(&(tile_id, bottom_edge)) {
+                next_row = next.0;
+                next_row_edge = match next.1 {
+                    Left => Bottom,
+                    Top => Left,
+                    Right => Top,
+                    Bottom => Right,
+                };
+                next_row_flipped ^= next.2;
+            } else {
+                next_row = 0;
+            }
+            continue;
+        }
 
         // and if there isn't a next row, quit.
+        break;
     }
 }
 
