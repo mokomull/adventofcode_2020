@@ -15,6 +15,7 @@ fn do_main(filename: &str) {
         .collect_vec();
     let part1 = transform(keys[0], private_keys[1]);
     dbg!(part1);
+    assert_eq!(part1, 9620012);
 }
 
 fn transform(subject: u64, loop_size: u64) -> u64 {
@@ -80,5 +81,10 @@ mod test {
     #[test]
     fn get_private_key() {
         assert_eq!(super::get_private_key(5764801), 8);
+    }
+
+    #[test]
+    fn main() {
+        super::do_main("../inputs/day_25.txt");
     }
 }
