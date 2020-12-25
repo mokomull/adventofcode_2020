@@ -204,6 +204,15 @@ fn do_main(filename: &str) {
         }
     }
     dbg!(sea_monsters);
+
+    let part2 = reconstructed
+        .image
+        .iter()
+        .flatten()
+        .filter(|&pixel| *pixel)
+        .count()
+        - sea_monsters * sea_monster.len();
+    dbg!(part2);
 }
 
 fn compute_left_edge_from_top(edge: Edge, flipped: bool) -> Edge {
