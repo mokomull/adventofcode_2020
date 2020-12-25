@@ -140,8 +140,18 @@ where
 
 #[cfg(test)]
 mod test {
+    use super::*;
+
     #[test]
     fn main() {
         super::do_main("../inputs/day_22.txt");
+    }
+
+    #[test]
+    fn recursive_combat() {
+        let decks = vec![vec![9, 2, 6, 3, 1].into(), vec![5, 8, 4, 7, 10].into()];
+        let expected: Vec<VecDeque<_>> =
+            vec![vec![].into(), vec![7, 5, 6, 2, 4, 1, 10, 8, 9, 3].into()];
+        assert_eq!(super::recursive_combat(decks), expected);
     }
 }
