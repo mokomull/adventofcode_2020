@@ -30,14 +30,18 @@ fn do_main(filename: &str) {
             .iter(),
         ) {
             if e1.1 == e2.1 {
-                edge_matches.insert((t1.id, e1.0), (t2.id, e2.0, false));
-                edge_matches.insert((t2.id, e2.0), (t1.id, e1.0, false));
+                // if the edges exactly-match, then we'll need to flip one after rotating the edges
+                // to place them adjacent.
+                edge_matches.insert((t1.id, e1.0), (t2.id, e2.0, true));
+                edge_matches.insert((t2.id, e2.0), (t1.id, e1.0, true));
             }
             let mut reversed = e2.1.clone();
             reversed.reverse();
             if e1.1 == reversed {
-                edge_matches.insert((t1.id, e1.0), (t2.id, e2.0, true));
-                edge_matches.insert((t2.id, e2.0), (t1.id, e1.0, true));
+                // but if they're already reversed from one-another, when rotated to adjacent edges
+                // they'll match.
+                edge_matches.insert((t1.id, e1.0), (t2.id, e2.0, false));
+                edge_matches.insert((t2.id, e2.0), (t1.id, e1.0, false));
             }
         }
     }
@@ -297,7 +301,9 @@ impl Tile {
     }
 
     fn left(&self) -> Vec<bool> {
-        self.image.iter().map(|row| row[0]).collect()
+        let mut ret = self.image.iter().map(|row| row[0]).collect_vec();
+        ret.reverse();
+        ret
     }
 
     fn right(&self) -> Vec<bool> {
@@ -309,7 +315,9 @@ impl Tile {
     }
 
     fn bottom(&self) -> Vec<bool> {
-        self.image.last().unwrap().clone()
+        let mut ret = self.image.last().unwrap().clone();
+        ret.reverse();
+        ret
     }
 
     fn rotate_clockwise(&mut self) {
