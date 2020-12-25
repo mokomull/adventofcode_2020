@@ -186,6 +186,7 @@ fn do_main(filename: &str) {
         if i == 4 {
             reconstructed.flip_vertically();
         }
+        reconstructed.rotate_clockwise();
 
         for x in 0..reconstructed.image.len() {
             for y in 0..reconstructed.image[0].len() {
