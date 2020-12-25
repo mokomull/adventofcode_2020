@@ -79,14 +79,12 @@ fn do_main(filename: &str) {
 
     // id, "left" edge, and flipped-ness, to be used after we've finished copying a whole row
     let (mut next_row, mut next_row_edge, mut next_row_flipped) = {
-        let bottom_edge = match edge {
-            Left => Bottom,
-            Top => Left,
-            Right => Top,
-            Bottom => Right,
-        };
+        let bottom_edge = compute_bottom_edge_from_left(edge);
         edge_matches[&(tile_id, bottom_edge)]
     };
+    // this told us which edge of the next row was the TOP, but the invariant is that we iterate
+    // from the LEFT edge.
+    next_row_edge = compute_left_edge_from_top(next_row_edge);
     dbg!(next_row);
 
     let mut reconstructed_image = vec![vec![]; by_id[&tile_id].image.len() - 2];
@@ -119,12 +117,7 @@ fn do_main(filename: &str) {
         }
 
         // figure out what the next tile to the right should be, and its orientation
-        let right_edge = match edge {
-            Left => Right,
-            Top => Bottom,
-            Right => Left,
-            Bottom => Top,
-        };
+        let right_edge = compute_right_edge_from_left(edge);
         if let Some(next) = edge_matches.get(&(tile_id, right_edge)) {
             tile_id = next.0;
             edge = next.1;
@@ -138,22 +131,12 @@ fn do_main(filename: &str) {
             edge = next_row_edge;
             flipped = next_row_flipped;
 
-            let bottom_edge = match edge {
-                Left => Bottom,
-                Top => Left,
-                Right => Top,
-                Bottom => Right,
-            };
+            let bottom_edge = compute_bottom_edge_from_left(edge);
             dbg!(bottom_edge);
             if let Some(next) = edge_matches.get(&(tile_id, bottom_edge)) {
                 dbg!(next);
                 next_row = next.0;
-                next_row_edge = match next.1 {
-                    Left => Bottom,
-                    Top => Left,
-                    Right => Top,
-                    Bottom => Right,
-                };
+                next_row_edge = compute_left_edge_from_top(next.1);
                 next_row_flipped ^= next.2;
             } else {
                 next_row = 0;
@@ -178,6 +161,30 @@ fn do_main(filename: &str) {
             }
         }
         println!();
+    }
+}
+
+fn compute_left_edge_from_top(edge: Edge) -> Edge {
+    match edge {
+        Top => Left,
+        Left => Bottom,
+        Bottom => Right,
+        Right => Top,
+    }
+}
+
+fn compute_bottom_edge_from_left(edge: Edge) -> Edge {
+    // this is the same thing, but named more clearly -- top ~> left and left ~> bottom are both
+    // exactly one counterclockwise movement.
+    compute_left_edge_from_top(edge)
+}
+
+fn compute_right_edge_from_left(edge: Edge) -> Edge {
+    match edge {
+        Top => Bottom,
+        Right => Left,
+        Bottom => Top,
+        Left => Right,
     }
 }
 
