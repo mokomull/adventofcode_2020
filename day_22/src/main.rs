@@ -78,9 +78,12 @@ fn recursive_combat(mut decks: Vec<VecDeque<u32>>) -> Vec<VecDeque<u32>> {
 
             if should_recurse {
                 let new_decks = decks
-                    .iter()
+                    .iter_mut()
                     .zip(&round)
-                    .map(|(deck, count)| deck.iter().take(*count as usize).cloned().collect())
+                    .map(|(deck, count)| {
+                        let slice = deck.make_contiguous();
+                        slice[..(*count as usize)].to_vec().into()
+                    })
                     .collect();
                 let recursive_result = recursive_combat(new_decks);
                 assert!(recursive_result.iter().any(|d| d.is_empty()));
