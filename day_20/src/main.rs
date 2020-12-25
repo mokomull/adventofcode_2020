@@ -41,7 +41,8 @@ fn do_main(filename: &str) {
     }
 
     let mut part1 = 1;
-    for tile in tiles {
+    let mut corner = None;
+    for tile in &tiles {
         let matching_edges = [Left, Right, Top, Bottom]
             .iter()
             .filter(|&edge| edge_matches.contains_key(&(tile.id, *edge)))
@@ -49,9 +50,43 @@ fn do_main(filename: &str) {
         if matching_edges == 2 {
             // this must be a corner if only two edges are in the set
             part1 *= tile.id;
+            corner = Some(tile.id);
         }
     }
     dbg!(part1);
+
+    let by_id = tiles.iter().map(|t| (t.id, t)).collect::<HashMap<_, _>>();
+
+    // invariant: edge is always the edge of the input data that will end up on the LEFT-hand edge
+    // of the next tile in the reconstructed image.
+    let mut next_tile = corner.unwrap();
+    let mut edge;
+    let mut flipped = false;
+
+    // figure out which edge of the corner tile we picked will be the "left"
+    edge = match [Left, Top, Right, Bottom]
+        .iter()
+        .filter(|&edge| edge_matches.contains_key(&(next_tile, *edge)))
+        .collect_vec()
+        .as_slice()
+    {
+        [Left, Top] => Right,
+        [Top, Right] => Bottom,
+        [Right, Bottom] => Left,
+        [Left, Bottom] => Top,
+        x => panic!("unexpected set of edges for the corner: {:?}", x),
+    };
+
+    // id, "left" edge, and flipped-ness, to be used after we've finished copying a whole row
+    let (mut next_row, mut next_row_edge, mut next_row_flipped) = {
+        let bottom_edge = match edge {
+            Left => Bottom,
+            Top => Left,
+            Right => Top,
+            Bottom => Right,
+        };
+        edge_matches[&(next_tile, bottom_edge)]
+    };
 }
 
 #[derive(Debug)]
