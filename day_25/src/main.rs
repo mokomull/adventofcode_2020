@@ -19,14 +19,18 @@ fn do_main(filename: &str) {
 }
 
 fn transform(subject: u64, loop_size: u64) -> u64 {
-    let mut value = 1;
-
-    for _ in 0..loop_size {
-        value *= subject;
-        value %= 20201227;
+    if loop_size == 0 {
+        1
+    } else if loop_size == 1 {
+        subject
+    } else {
+        let sqrt = transform(subject, loop_size / 2);
+        if loop_size % 2 == 0 {
+            (sqrt * sqrt) % 20201227
+        } else {
+            (((sqrt * sqrt) % 20201227) * subject) % 20201227
+        }
     }
-
-    value
 }
 
 fn get_private_key(pubkey: u64) -> u64 {
