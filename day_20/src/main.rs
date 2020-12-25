@@ -117,4 +117,24 @@ impl Tile {
     fn bottom(&self) -> Vec<bool> {
         self.image.last().unwrap().clone()
     }
+
+    fn rotate_clockwise(&mut self) {
+        let mut new_image = Vec::new();
+
+        for input_column in 0..self.image[0].len() {
+            let mut new_row: Vec<bool> = self.image.iter().map(|row| row[input_column]).collect();
+
+            // that gives the pixels in the column from the top down -- but the left-hand side needs
+            // to be what was originally on the *bottom*
+            new_row.reverse();
+
+            new_image.push(new_row);
+        }
+
+        self.image = new_image;
+    }
+
+    fn flip_vertically(&mut self) {
+        self.image.reverse();
+    }
 }
