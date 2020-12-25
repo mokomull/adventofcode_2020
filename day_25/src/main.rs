@@ -13,6 +13,8 @@ fn do_main(filename: &str) {
         .iter()
         .map(|&pubkey| get_private_key(pubkey))
         .collect_vec();
+    let part1 = transform(keys[0], private_keys[1]);
+    dbg!(part1);
 }
 
 fn transform(subject: u64, loop_size: u64) -> u64 {
