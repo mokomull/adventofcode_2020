@@ -87,9 +87,11 @@ fn do_main(filename: &str) {
         };
         edge_matches[&(tile_id, bottom_edge)]
     };
+    dbg!(next_row);
 
     let mut reconstructed_image = vec![vec![]; by_id[&tile_id].image.len() - 2];
     loop {
+        dbg!((tile_id, edge, flipped));
         // copy this tile to the image (excluding its borders)
         let mut tile = by_id[&tile_id].clone();
         let rotations = match edge {
@@ -138,11 +140,13 @@ fn do_main(filename: &str) {
 
             let bottom_edge = match edge {
                 Left => Bottom,
-                Top => Left, 
+                Top => Left,
                 Right => Top,
                 Bottom => Right,
             };
+            dbg!(bottom_edge);
             if let Some(next) = edge_matches.get(&(tile_id, bottom_edge)) {
+                dbg!(next);
                 next_row = next.0;
                 next_row_edge = match next.1 {
                     Left => Bottom,
@@ -154,11 +158,26 @@ fn do_main(filename: &str) {
             } else {
                 next_row = 0;
             }
+
+            dbg!((next_row, next_row_edge, next_row_flipped));
+
+            reconstructed_image.append(&mut vec![vec![]; by_id[&tile_id].image.len() - 2]);
             continue;
         }
 
         // and if there isn't a next row, quit.
         break;
+    }
+
+    for row in &reconstructed_image {
+        for col in row {
+            if *col {
+                print!("#")
+            } else {
+                print!(".");
+            }
+        }
+        println!();
     }
 }
 
