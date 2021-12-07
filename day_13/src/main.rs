@@ -62,7 +62,7 @@ fn do_main(filename: &str) {
                 }
             }
         })
-        .fold1(|(a0, n0), (a1, n1)| {
+        .reduce(|(a0, n0), (a1, n1)| {
             // solve Chinese Remainder Theorem for the two buses:
             //   t = a0 (mod n0)
             //   t = a1 (mod n1)
